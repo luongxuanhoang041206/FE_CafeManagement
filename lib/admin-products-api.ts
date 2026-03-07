@@ -1,0 +1,252 @@
+// import type { Product } from "@/lib/mock-data"
+
+// const API_BASE_URL = "http://localhost:8080"
+
+// interface AdminProductDto {
+//   id: string
+//   name: string
+//   price: number
+//   active: boolean
+//   groupid: string
+// }
+
+// interface CreateProductRequest {
+//   id?: string
+//   name: string
+//   price: number
+//   active: boolean
+//   groupId: string
+// }
+
+// interface UpdateProductRequest {
+//   id: string
+//   name: string
+//   price: number
+//   active: boolean
+//   groupId: string
+// }
+
+// function mapDtoToProduct(dto: AdminProductDto): Product {
+//   return {
+//     id: dto.id,
+//     name: dto.name,
+//     price: dto.price,
+//     active: dto.active,
+//     groupId: dto.groupid,
+//     // Backend schema s not expose these fields; use sensible defaults.
+//     createdAt: new Date().toISOString(),
+//     description: "",
+//   }
+// }
+
+// async function handleResponse<T>(res: Response): Promise<T> {
+//   if (!res.ok) {
+//     const text = await res.text()
+//     throw new Error(text || `Request failed with status ${res.status}`)
+//   }
+//   if (res.status === 204) {
+//     return undefined as unknown as T
+//   }
+//   return (await res.json()) as T
+// }
+
+// export async function fetchProductsFromApi(): Promise<Product[]> {
+//   const res = await fetch(`${API_BASE_URL}/admin/products`)
+//   const data = await handleResponse<AdminProductDto[]>(res)
+//   return data.map(mapDtoToProduct)
+// }
+
+// export async function saveProduct(product: Product): Promise<Product> {
+//   const body: CreateProductRequest | UpdateProductRequest = {
+//     id: product.id,
+//     name: product.name,
+//     price: product.price,
+//     active: product.active,
+//     groupId: product.groupId,
+//   }
+
+//   const hasId = Boolean(product.id)
+
+//   const url = hasId
+//     ? `${API_BASE_URL}/admin/products/${encodeURIComponent(product.id)}`
+//     : `${API_BASE_URL}/admin/products`
+
+//   const method = hasId ? "PATCH" : "POST"
+
+//   const res = await fetch(url, {
+//     method,
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(body),
+//   })
+
+//   const dto = await handleResponse<AdminProductDto>(res)
+//   return mapDtoToProduct(dto)
+// }
+
+// export async function toggleProductStatus(id: string): Promise<Product> {
+//   const res = await fetch(
+//     `${API_BASE_URL}/admin/products/${encodeURIComponent(id)}/status`,
+//     {
+//       method: "PATCH",
+//     },
+//   )
+//   const dto = await handleResponse<AdminProductDto>(res)
+//   return mapDtoToProduct(dto)
+// }
+
+// export async function deleteProductById(id: string): Promise<void> {
+//   await fetch(
+//     `${API_BASE_URL}/admin/products/${encodeURIComponent(id)}/delete`,
+//     {
+//       method: "PATCH",
+//     },
+//   ).then(async (res) => {
+//     await handleResponse<string>(res)
+//   })
+// }
+import type { Product } from "@/lib/mock-data"
+
+const API_BASE_URL = "http://localhost:8080"
+
+interface AdminProductDto {
+  id: number
+  name: string
+  price: number
+  active: boolean
+  groupid: string
+}
+
+interface PageResponse<T> {
+  content: T[]
+  totalElements: number
+  totalPages: number
+  size: number
+  number: number
+}
+
+interface CreateProductRequest {
+  name: string
+  price: number
+  active: boolean
+  groupId: string
+}
+
+interface UpdateProductRequest {
+  name: string
+  price: number
+  active: boolean
+  groupId: string
+}
+
+function mapDtoToProduct(dto: AdminProductDto): Product {
+  return {
+    id: dto.id.toString(),
+    name: dto.name,
+    price: dto.price,
+    active: dto.active,
+    groupId: dto.groupid,
+    createdAt: new Date().toISOString(),
+    description: "",
+  }
+}
+
+async function handleResponse<T>(res: Response): Promise<T> {
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(text || `Request failed with status ${res.status}`)
+  }
+
+  const text = await res.text()
+
+  if (!text) {
+    return undefined as unknown as T
+  }
+
+  return JSON.parse(text)
+}
+
+export async function fetchProductsFromApi(
+  page: number,
+  size: number,
+  sortBy?: string,
+  direction?: string
+): Promise<{ content: Product[]; totalPages: number; totalElements: number }> {
+
+  let res = await fetch(
+    `${API_BASE_URL}/admin/products?page=${page}&size=${size}`
+  )
+  if (sortBy && direction) {
+    res = await fetch(`${API_BASE_URL}/admin/products?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`)
+  }
+
+  const data = await handleResponse<PageResponse<AdminProductDto>>(res)
+
+  return {
+    content: data.content.map(mapDtoToProduct),
+    totalPages: data.totalPages,
+    totalElements: data.totalElements,
+  }
+}
+// export async function fetchProductsFromApi(): Promise<Product[]> {
+
+//   const res = await fetch(
+//     `${API_BASE_URL}/admin/products?page=0&size=6&sortBy=createdAt&direction=desc`
+//   )
+
+//   const data = await handleResponse<AdminProductDto[]>(res)
+
+//   if (!Array.isArray(data)) {
+//     return []
+//   }
+
+//   return data.map(mapDtoToProduct)
+// }
+
+export async function saveProduct(product: Product): Promise<Product> {
+  const body: CreateProductRequest | UpdateProductRequest = {
+    name: product.name,
+    price: product.price,
+    active: product.active,
+    groupId: product.groupId,
+  }
+
+  const hasId = Boolean(product.id)
+
+  const url = hasId
+    ? `${API_BASE_URL}/admin/products/${encodeURIComponent(product.id)}`
+    : `${API_BASE_URL}/admin/products`
+
+  const method = hasId ? "PATCH" : "POST"
+
+  const res = await fetch(url, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  })
+
+  const dto = await handleResponse<AdminProductDto>(res)
+  return mapDtoToProduct(dto)
+}
+
+export async function toggleProductStatus(id: string): Promise<Product> {
+  const res = await fetch(
+    `${API_BASE_URL}/admin/products/${encodeURIComponent(id)}/status`,
+    { method: "PATCH" }
+  )
+
+  const dto = await handleResponse<AdminProductDto>(res)
+  return mapDtoToProduct(dto)
+}
+
+export async function deleteProductById(id: string): Promise<void> {
+  const res = await fetch(
+    `${API_BASE_URL}/admin/products/${encodeURIComponent(id)}/delete`,
+    { method: "DELETE" }
+  )
+
+  await handleResponse(res)
+}
