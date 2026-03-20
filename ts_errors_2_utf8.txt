@@ -1,0 +1,5 @@
+﻿components/employee-table.tsx(160,34): error TS2322: Type '"ADMIN"' is not assignable to type 'Role'.
+components/role-switcher.tsx(16,28): error TS2322: Type '"ADMIN"' is not assignable to type 'Role'.
+components/role-switcher.tsx(16,37): error TS2322: Type '"MANAGER"' is not assignable to type 'Role'.
+components/role-switcher.tsx(16,48): error TS2322: Type '"STAFF"' is not assignable to type 'Role'.
+lib/mock-data.ts(18,3): error TS2322: Type '"ADMIN"' is not assignable to type 'Role'.

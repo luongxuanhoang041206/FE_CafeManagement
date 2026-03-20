@@ -1,13 +1,13 @@
 "use client"
 
-import { createContext, useCallback, useContext, useState, type ReactNode } from "react"
+import { createContext, useCallback, useContext, useState, useEffect, type ReactNode } from "react"
 import type { Role, User, AuthToken, AuthState } from "./types"
 import { MOCK_USER } from "@/lib/mock-data"
+import { adminLogin } from "@/lib/admin-auth-api"
 
 interface AuthContextValue extends AuthState {
   switchRole: (role: Role) => void
-  // Prepared for future JWT integration
-  login: (email: string, password: string) => Promise<void>
+  login: (username: string, password: string) => Promise<void>
   logout: () => void
   refreshSession: () => Promise<void>
 }
@@ -15,13 +15,23 @@ interface AuthContextValue extends AuthState {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(MOCK_USER)
-  const [token, setToken] = useState<AuthToken | null>({
-    // Mock token for demo; will be replaced with real JWT
-    accessToken: "mock_jwt_access_token",
-    refreshToken: "mock_jwt_refresh_token",
-    expiresAt: Date.now() + 3600 * 1000,
-  })
+  const [user, setUser] = useState<User | null>(null)
+  const [token, setToken] = useState<AuthToken | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem("admin_username")
+    const storedRole = localStorage.getItem("admin_role")
+    if (storedUsername && storedRole) {
+      setUser({
+        id: "1",
+        name: storedUsername,
+        email: "",
+        role: storedRole as Role,
+      })
+    }
+    setIsLoading(false)
+  }, [])
 
   const switchRole = useCallback((role: Role) => {
     setUser((prev) =>
@@ -29,20 +39,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     )
   }, [])
 
-  // Stub for real JWT login
-  const login = useCallback(async (_email: string, _password: string) => {
-    // Future: POST /api/auth/login -> receive JWT
-    // For now, just set the mock user
-    setUser(MOCK_USER)
-    setToken({
-      accessToken: "mock_jwt_access_token",
-      refreshToken: "mock_jwt_refresh_token",
-      expiresAt: Date.now() + 3600 * 1000,
-    })
+  const login = useCallback(async (username: string, password: string) => {
+    try {
+      const response = await adminLogin({ username, password })
+
+      const resolvedUsername = response?.username || username
+      const resolvedRole = response?.role || "ROLE_ADMIN"
+
+      localStorage.setItem("admin_username", resolvedUsername)
+      localStorage.setItem("admin_role", resolvedRole)
+
+      setUser({
+        id: response.id,
+        name: resolvedUsername,
+        email: "",
+        role: resolvedRole as Role,
+      })
+    } catch (e) {
+      console.error(e)
+      throw e
+    }
   }, [])
 
   const logout = useCallback(() => {
-    // Future: POST /api/auth/logout -> invalidate JWT
+    localStorage.removeItem("admin_username")
+    localStorage.removeItem("admin_role")
     setUser(null)
     setToken(null)
   }, [])
@@ -62,7 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         token,
         isAuthenticated: !!user,
-        isLoading: false,
+        isLoading,
         switchRole,
         login,
         logout,

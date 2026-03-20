@@ -1,7 +1,7 @@
 const API_BASE_URL = "http://localhost:8080"
 
 export interface Employee {
-  id: string
+  id: number
   name: string
   phone: string
   position: string
@@ -9,7 +9,7 @@ export interface Employee {
 }
 
 interface AdminEmployeeDto {
-  id: string
+  id: number
   name: string
   phone: string
   position: string
@@ -25,7 +25,7 @@ interface PageResponse<T> {
 }
 
 interface CreateEmployeeRequest {
-  id?: string
+  id?: number
   name: string
   position: string
   phone: string
@@ -33,8 +33,10 @@ interface CreateEmployeeRequest {
 }
 
 interface UpdateEmployeeRequest {
-  id: string
+  id: number
   name: string
+  position: string
+  phone: string
   salary: string
 }
 
@@ -75,7 +77,9 @@ export async function fetchEmployeesFromApi(
   }
   if (name?.trim()) params.set("name", name.trim())
 
-  const res = await fetch(`${API_BASE_URL}/admin/employee?${params}`)
+  const res = await fetch(`${API_BASE_URL}/admin/employee?${params}`, {
+    credentials: "include"
+  })
   const data = await handleResponse<PageResponse<AdminEmployeeDto>>(res)
 
   const content = Array.isArray(data.content) ? data.content : []
@@ -96,6 +100,8 @@ export async function saveEmployee(employee: Employee): Promise<Employee> {
     const body: UpdateEmployeeRequest = {
       id: employee.id,
       name: employee.name,
+      position: employee.position,
+      phone: employee.phone,
       salary: employee.salary,
     }
     const res = await fetch(
@@ -103,6 +109,7 @@ export async function saveEmployee(employee: Employee): Promise<Employee> {
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(body),
       }
     )
@@ -119,24 +126,26 @@ export async function saveEmployee(employee: Employee): Promise<Employee> {
   const res = await fetch(`${API_BASE_URL}/admin/employee`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(body),
   })
   const dto = await handleResponse<AdminEmployeeDto>(res)
   return mapDtoToEmployee(dto)
 }
 
-export async function deleteEmployeeById(id: string): Promise<void> {
+export async function deleteEmployeeById(id: number): Promise<void> {
   const res = await fetch(
     `${API_BASE_URL}/admin/employee/${encodeURIComponent(id)}`,
-    { method: "DELETE" }
+    { method: "DELETE", credentials: "include" }
   )
   await handleResponse(res)
 }
 
-export async function getEmployeeById(id: string): Promise<Employee | null> {
+export async function getEmployeeById(id: number): Promise<Employee | null> {
   try {
     const res = await fetch(
-      `${API_BASE_URL}/admin/employee/${encodeURIComponent(id)}`
+      `${API_BASE_URL}/admin/employee/${encodeURIComponent(id)}`,
+      { credentials: "include" }
     )
     const dto = await handleResponse<AdminEmployeeDto>(res)
     return mapDtoToEmployee(dto)

@@ -56,7 +56,7 @@ export function EmployeeModal({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const saved: Employee = {
-      id: employee?.id ?? "",
+      id: employee?.id ?? 0,
       name: formData.name,
       position: formData.position,
       phone: formData.phone,

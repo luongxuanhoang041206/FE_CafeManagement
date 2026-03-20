@@ -115,7 +115,8 @@ interface AdminProductDto {
   name: string
   price: number
   active: boolean
-  groupid: string
+  groupId: string
+  imageUrl?: string
 }
 
 interface PageResponse<T> {
@@ -131,6 +132,7 @@ interface CreateProductRequest {
   price: number
   active: boolean
   groupId: string
+  imageUrl?: string
 }
 
 interface UpdateProductRequest {
@@ -138,17 +140,19 @@ interface UpdateProductRequest {
   price: number
   active: boolean
   groupId: string
+  imageUrl?: string
 }
 
 function mapDtoToProduct(dto: AdminProductDto): Product {
   return {
-    id: dto.id.toString(),
+    id: dto.id,
     name: dto.name,
     price: dto.price,
     active: dto.active,
-    groupId: dto.groupid,
+    groupId: dto.groupId,
     createdAt: new Date().toISOString(),
     description: "",
+    imageUrl: dto.imageUrl || "",
   }
 }
 
@@ -175,10 +179,14 @@ export async function fetchProductsFromApi(
 ): Promise<{ content: Product[]; totalPages: number; totalElements: number }> {
 
   let res = await fetch(
-    `${API_BASE_URL}/admin/products?page=${page}&size=${size}`
+    `${API_BASE_URL}/admin/products?page=${page}&size=${size}`, {
+    credentials: "include"
+  }
   )
   if (sortBy && direction) {
-    res = await fetch(`${API_BASE_URL}/admin/products?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`)
+    res = await fetch(`${API_BASE_URL}/admin/products?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`, {
+      credentials: "include"
+    })
   }
 
   const data = await handleResponse<PageResponse<AdminProductDto>>(res)
@@ -210,6 +218,7 @@ export async function saveProduct(product: Product): Promise<Product> {
     price: product.price,
     active: product.active,
     groupId: product.groupId,
+    imageUrl: product.imageUrl || "",
   }
 
   const hasId = Boolean(product.id)
@@ -225,6 +234,7 @@ export async function saveProduct(product: Product): Promise<Product> {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(body),
   })
 
@@ -232,20 +242,20 @@ export async function saveProduct(product: Product): Promise<Product> {
   return mapDtoToProduct(dto)
 }
 
-export async function toggleProductStatus(id: string): Promise<Product> {
+export async function toggleProductStatus(id: string | number): Promise<Product> {
   const res = await fetch(
     `${API_BASE_URL}/admin/products/${encodeURIComponent(id)}/status`,
-    { method: "PATCH" }
+    { method: "PATCH", credentials: "include" }
   )
 
   const dto = await handleResponse<AdminProductDto>(res)
   return mapDtoToProduct(dto)
 }
 
-export async function deleteProductById(id: string): Promise<void> {
+export async function deleteProductById(id: string | number): Promise<void> {
   const res = await fetch(
     `${API_BASE_URL}/admin/products/${encodeURIComponent(id)}/delete`,
-    { method: "DELETE" }
+    { method: "DELETE", credentials: "include" }
   )
 
   await handleResponse(res)

@@ -19,7 +19,7 @@ interface ProductDrawerProps {
 
 export function ProductDrawer({ product, open, onOpenChange }: ProductDrawerProps) {
   if (!product) return null
-
+  console.log("Product data:", product)
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto">
@@ -28,6 +28,17 @@ export function ProductDrawer({ product, open, onOpenChange }: ProductDrawerProp
           <SheetDescription>Product Details</SheetDescription>
         </SheetHeader>
         <div className="space-y-6 px-4">
+          {/* Product Image */}
+          {product.imageUrl && (
+            <div className="overflow-hidden rounded-lg border bg-muted/20">
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                className="h-48 w-full object-cover"
+              />
+            </div>
+          )}
+
           <div className="flex items-center gap-2">
             <Badge variant={product.active ? "default" : "secondary"}>
               {product.active ? "Active" : "Inactive"}

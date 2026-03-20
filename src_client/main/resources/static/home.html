@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Lexend+Giga:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="component/component.css">
+</head>
+<body>
+
+<!-- ====== ANIMATION SECTION (frame scroll) ====== -->
+<div id="navbar-placeholder"></div>
+
+<section class="animation-section">
+    <div class="frame-container">
+        <img id="coffeeFrame" src="imagesHome/ezgif-frame-001.png">
+
+        <!-- Chữ hiện ngay lúc đầu -->
+        <div class="scroll-text scroll-text--intro" id="scrollText0" data-start="0.00" data-end="0.20">
+            <span class="label">EST. 2018 — HÀ NỘI</span>
+            <h1 class="brand-name">Hai Gau<br>Coffee</h1>
+            <p class="brand-slogan">Chậm lại. Thưởng thức. Sống trọn.</p>
+        </div>
+
+        <!-- Chữ bay lên theo scroll trong lúc xem animation -->
+        <div class="scroll-text" id="scrollText1" data-start="0.05" data-end="0.35">
+            <span class="label">SINCE 2018</span>
+            <h2>Mỗi tách cà phê<br>là một câu chuyện</h2>
+        </div>
+
+        <div class="scroll-text" id="scrollText2" data-start="0.35" data-end="0.65">
+            <span class="label">OUR CRAFT</span>
+            <h2>Rang xay thủ công<br>từ hạt đặc sản</h2>
+        </div>
+
+        <div class="scroll-text" id="scrollText3" data-start="0.65" data-end="0.90">
+            <span class="label">PURE TASTE</span>
+            <h2>Hương vị nguyên bản<br>không pha tạp</h2>
+        </div>
+    </div>
+</section>
+
+<!-- ====== PRODUCTS SECTION ====== -->
+<section class="next-section products-section">
+    <div class="products-inner">
+
+        <div class="products-heading reveal">
+            <span class="section-label">OUR MENU</span>
+            <h2 class="section-title">Hôm nay bạn thế nào?<br>một tách hôm nay</h2>
+        </div>
+
+        <div class="products-grid">
+            <div class="product-card reveal" style="--delay:0.1s">
+                <div class="product-img-wrap">
+                    <img src="imagesHome/bacxiu.jpg" alt="Bạc Xỉu">
+                </div>
+                <div class="product-info">
+                    <span class="product-type">Sữa đá</span>
+                    <h3 class="product-name">Bạc Xỉu</h3>
+                    <p class="product-desc">Ngọt dịu, béo mượt — vị quen thuộc của mỗi sáng Sài Gòn.</p>
+                    <span class="product-price">35.000₫</span>
+                </div>
+            </div>
+
+            <div class="product-card reveal" style="--delay:0.25s">
+                <div class="product-img-wrap">
+                    <img src="imagesHome/capheden.jpg" alt="Cà Phê Đen">
+                </div>
+                <div class="product-info">
+                    <span class="product-type">Đen đá</span>
+                    <h3 class="product-name">Cà Phê Đen</h3>
+                    <p class="product-desc">Đắng sâu, hậu ngọt — thuần khiết từng giọt phin nhỏ giọt.</p>
+                    <span class="product-price">25.000₫</span>
+                </div>
+            </div>
+
+            <div class="product-card reveal" style="--delay:0.4s">
+                <div class="product-img-wrap">
+                    <img src="imagesHome/coffeecaramel.jpg" alt="Cold Brew">
+                </div>
+                <div class="product-info">
+                    <span class="product-type">Cold Brew</span>
+                    <h3 class="product-name">Cold Brew Muối</h3>
+                    <p class="product-desc">Lạnh mịn, muối tan — đậm vị mà không gắt, uống là ghiền.</p>
+                    <span class="product-price">45.000₫</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-wrap reveal">
+            <a href="pages/products.html" class="btn-order"  rel="noopener">
+                Đặt mua ngay
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                </svg>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- ====== VIDEO SECTION ====== -->
+<section class="video-section">
+    <div class="video-left reveal" data-aos="fade-up" data-aos-duration="700">
+        <span class="section-label"data-aos="fade-up" data-aos-duration="700">OUR ROOTS</span>
+        <h2 class="video-heading" data-aos="fade-up" data-aos-duration="700">Cà Phê<br>Việt</h2>
+        <p class="video-sub" data-aos="fade-up" data-aos-duration="700">Sự ngọt ngào của vị đắng</p>
+        <p class="video-body" data-aos="fade-up" data-aos-duration="700">Mỗi hạt cà phê được chọn lọc từ những vùng cao nguyên đất đỏ. Rang mộc, phin truyền thống — giữ trọn linh hồn của cà phê Việt qua từng giọt.</p>
+    </div>
+    <div class="video-right reveal" data-aos="fade-up" data-aos-duration="700">
+        <div class="video-wrap">
+            <video autoplay muted loop playsinline>
+                <source src="imagesHome/coffee.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+</section>
+<div id="footer-placeholder"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="component/component.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>

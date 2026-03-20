@@ -56,7 +56,9 @@ export async function fetchUsersFromApi(
   params.set("size", String(size))
   if (name?.trim()) params.set("name", name.trim())
 
-  const res = await fetch(`${API_BASE_URL}/admin/user?${params}`)
+  const res = await fetch(`${API_BASE_URL}/admin/user?${params}`, {
+    credentials: "include"
+  })
   const data = await handleResponse<any>(res)
 
   const pageData: PageResponse<AdminUserDto> | null =
@@ -82,6 +84,7 @@ export async function fetchUsersFromApi(
 export async function toggleUserActive(id: string): Promise<void> {
   const res = await fetch(`${API_BASE_URL}/admin/user/${encodeURIComponent(id)}`, {
     method: "PATCH",
+    credentials: "include",
   })
   await handleResponse(res)
 }
@@ -89,6 +92,7 @@ export async function toggleUserActive(id: string): Promise<void> {
 export async function deleteUserById(id: string): Promise<void> {
   const res = await fetch(`${API_BASE_URL}/admin/user/${encodeURIComponent(id)}`, {
     method: "DELETE",
+    credentials: "include",
   })
   await handleResponse(res)
 }

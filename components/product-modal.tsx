@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import type { Product } from "@/lib/mock-data"
+import { uploadProductImage } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -15,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
+import { ImagePlus, X } from "lucide-react"
 
 interface ProductModalProps {
   product: Product | null
@@ -31,7 +33,13 @@ export function ProductModal({ product, open, onOpenChange, onSave }: ProductMod
     groupId: "",
     active: true,
     description: "",
+    imageUrl: "",
   })
+
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
 
   useEffect(() => {
     if (product) {
@@ -41,7 +49,11 @@ export function ProductModal({ product, open, onOpenChange, onSave }: ProductMod
         groupId: product.groupId,
         active: product.active,
         description: product.description || "",
+        imageUrl: product.imageUrl || "",
       })
+      // Show existing image as preview when editing
+      setImagePreview(product.imageUrl || null)
+      console.log(product)
     } else {
       setFormData({
         name: "",
@@ -49,23 +61,62 @@ export function ProductModal({ product, open, onOpenChange, onSave }: ProductMod
         groupId: "",
         active: true,
         description: "",
+        imageUrl: "",
       })
+      setImagePreview(null)
     }
+    // Reset file-related state when modal opens/closes
+    setImageFile(null)
+    setUploadError(null)
   }, [product, open])
+
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) {
+      setImageFile(file)
+      setUploadError(null)
+      const previewUrl = URL.createObjectURL(file)
+      setImagePreview(previewUrl)
+    }
+  }
+
+  function handleRemoveImage() {
+    setImageFile(null)
+    setImagePreview(null)
+    setFormData((p) => ({ ...p, imageUrl: "" }))
+    setUploadError(null)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    const saved: Product = {
-      id: product?.id || "",
-      name: formData.name,
-      price: parseFloat(formData.price) || 0,
-      groupId: formData.groupId,
-      active: formData.active,
-      description: formData.description,
-      createdAt: product?.createdAt || new Date().toISOString(),
+    setIsUploading(true)
+    setUploadError(null)
+
+    let finalImageUrl = formData.imageUrl
+
+    try {
+      // Upload new image to Supabase if a new file was selected
+      if (imageFile) {
+        finalImageUrl = await uploadProductImage(imageFile)
+      }
+
+      const saved: Product = {
+        id: product?.id || 0,
+        name: formData.name,
+        price: parseFloat(formData.price) || 0,
+        groupId: formData.groupId,
+        active: formData.active,
+        description: formData.description,
+        imageUrl: finalImageUrl,
+        createdAt: product?.createdAt || new Date().toISOString(),
+      }
+      await onSave(saved)
+      onOpenChange(false)
+    } catch (err: any) {
+      setUploadError(err.message || "Failed to upload image")
+    } finally {
+      setIsUploading(false)
     }
-    await onSave(saved)
-    onOpenChange(false)
   }
 
   return (
@@ -122,6 +173,49 @@ export function ProductModal({ product, open, onOpenChange, onSave }: ProductMod
               rows={3}
             />
           </div>
+
+          {/* Image Upload Section */}
+          <div className="space-y-2">
+            <Label>Product Image</Label>
+
+            {imagePreview ? (
+              <div className="relative rounded-lg border bg-muted/30 p-2">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="mx-auto max-h-40 rounded-md object-contain"
+                />
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="absolute right-2 top-2 rounded-full bg-destructive p-1 text-destructive-foreground shadow-sm hover:bg-destructive/90"
+                >
+                  <X className="size-3.5" />
+                </button>
+              </div>
+            ) : (
+              <label
+                htmlFor="image-upload"
+                className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/10 p-6 transition-colors hover:border-muted-foreground/50 hover:bg-muted/20"
+              >
+                <ImagePlus className="size-8 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Click to upload an image</span>
+              </label>
+            )}
+
+            <Input
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+
+            {uploadError && (
+              <p className="text-sm text-destructive">{uploadError}</p>
+            )}
+          </div>
+
           <div className="flex items-center gap-3">
             <Switch
               id="active"
@@ -134,7 +228,9 @@ export function ProductModal({ product, open, onOpenChange, onSave }: ProductMod
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit">{isEdit ? "Save Changes" : "Create Product"}</Button>
+            <Button type="submit" disabled={isUploading}>
+              {isUploading ? "Uploading..." : isEdit ? "Save Changes" : "Create Product"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

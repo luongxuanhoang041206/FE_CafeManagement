@@ -1,15 +1,19 @@
 // Role hierarchy: ADMIN > MANAGER > STAFF
-export type Role = "ADMIN" | "MANAGER" | "STAFF"
+export type Role = "ROLE_ADMIN" | "ROLE_MANAGER" | "ROLE_STAFF"
+
+export interface LoginAdminRequest {
+  username?: string;
+  password?: string;
+}
 
 export interface User {
   id: string
   name: string
-  email: string
+  email?: string
   role: Role
   avatarUrl?: string
 }
 
-// Structure prepared for future JWT integration
 export interface AuthToken {
   accessToken: string
   refreshToken: string
@@ -23,9 +27,8 @@ export interface AuthState {
   isLoading: boolean
 }
 
-// Permission definitions for each role
 export const ROLE_PERMISSIONS: Record<Role, string[]> = {
-  ADMIN: [
+  ROLE_ADMIN: [
     "view:dashboard",
     "view:products",
     "create:products",
@@ -42,19 +45,25 @@ export const ROLE_PERMISSIONS: Record<Role, string[]> = {
     "view:settings",
     "manage:settings",
   ],
-  MANAGER: [
+  ROLE_MANAGER: [
     "view:dashboard",
     "view:products",
+    "create:products",
     "edit:products",
     "toggle:products",
     "view:employees",
+    "create:employees",
     "edit:employees",
+    "delete:employees",
     "view:orders",
+    "order:create",
+    "order:cancel",
   ],
-  STAFF: [
+  ROLE_STAFF: [
     "view:dashboard",
     "view:products",
-    "view:employees",
+    "view:orders",
+    "create:orders",
   ],
 }
 
@@ -67,13 +76,13 @@ export function hasRole(userRole: Role, requiredRoles: Role[]): boolean {
 }
 
 export const ROLE_LABELS: Record<Role, string> = {
-  ADMIN: "Admin",
-  MANAGER: "Manager",
-  STAFF: "Staff",
+  ROLE_ADMIN: "Admin",
+  ROLE_MANAGER: "Manager",
+  ROLE_STAFF: "Staff",
 }
 
 export const ROLE_COLORS: Record<Role, { bg: string; text: string }> = {
-  ADMIN: { bg: "bg-primary/10", text: "text-primary" },
-  MANAGER: { bg: "bg-chart-2/10", text: "text-chart-2" },
-  STAFF: { bg: "bg-muted-foreground/10", text: "text-muted-foreground" },
+  ROLE_ADMIN: { bg: "bg-primary/10", text: "text-primary" },
+  ROLE_MANAGER: { bg: "bg-chart-2/10", text: "text-chart-2" },
+  ROLE_STAFF: { bg: "bg-muted-foreground/10", text: "text-muted-foreground" },
 }

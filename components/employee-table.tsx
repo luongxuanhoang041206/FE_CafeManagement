@@ -61,8 +61,8 @@ export function EmployeeTable() {
 
   useEffect(() => {
     setLoading(true)
-    let sortBy: string | undefined
-    let direction: string | undefined
+    let sortBy = "id"
+    let direction = "asc"
     if (sortOption === "salary_desc") {
       sortBy = "salary"
       direction = "desc"

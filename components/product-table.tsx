@@ -69,10 +69,10 @@ export function ProductTable() {
   // ✅ FETCH BACKEND PAGINATION
   useEffect(() => {
     setLoading(true)
-  
+
     let sortBy: string | undefined
     let direction: string | undefined
-  
+
     if (sortOption === "created_desc") {
       sortBy = "createdAt"
       direction = "desc"
@@ -86,7 +86,7 @@ export function ProductTable() {
       sortBy = "price"
       direction = "desc"
     }
-  
+
     fetchProductsFromApi(currentPage - 1, ITEMS_PER_PAGE, sortBy, direction)
       .then((data) => {
         setProducts(data.content)
@@ -97,7 +97,7 @@ export function ProductTable() {
         console.error("Failed to load products", error)
       })
       .finally(() => setLoading(false))
-  
+
   }, [currentPage, sortOption])
 
   // ✅ search + filter local trên page hiện tại (trên trang hiện tại)
@@ -109,7 +109,7 @@ export function ProductTable() {
       result = result.filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
-          p.id.toLowerCase().includes(q) ||
+          p.id.toString().toLowerCase().includes(q) ||
           p.groupId.toLowerCase().includes(q),
       )
     }
@@ -120,14 +120,14 @@ export function ProductTable() {
     return result
   }, [products, search, filter])
 
-  // const handleToggle = useCallback(async (id: string) => {
-  //   try {
-  //     const updated = await toggleProductStatus(id)
-  //     setProducts((prev) => prev.map((p) => (p.id === id ? updated : p)))
-  //   } catch (error) {
-  //     console.error("Failed to toggle product status", error)
-  //   }
-  // }, [])
+  const handleToggle = useCallback(async (id: number) => {
+    try {
+      const updated = await toggleProductStatus(id)
+      setProducts((prev) => prev.map((p) => (p.id === id ? updated : p)))
+    } catch (error) {
+      console.error("Failed to toggle product status", error)
+    }
+  }, [])
 
   // const handleSave = useCallback(async (product: Product) => {
   //   try {
@@ -192,19 +192,19 @@ export function ProductTable() {
             />
           </div>
           <Select value={sortOption} onValueChange={(v) => {
-              setCurrentPage(1)
-              setSortOption(v)
-            }}>
-              <SelectTrigger className="w-[170px]">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="created_desc">Newest</SelectItem>
-                <SelectItem value="created_asc">Oldest</SelectItem>
-                <SelectItem value="price_asc">Price ascending</SelectItem>
-                <SelectItem value="price_desc">Price descending</SelectItem>
-              </SelectContent>
-            </Select>
+            setCurrentPage(1)
+            setSortOption(v)
+          }}>
+            <SelectTrigger className="w-[170px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="created_desc">Newest</SelectItem>
+              <SelectItem value="created_asc">Oldest</SelectItem>
+              <SelectItem value="price_asc">Price ascending</SelectItem>
+              <SelectItem value="price_desc">Price descending</SelectItem>
+            </SelectContent>
+          </Select>
           <Select value={filter} onValueChange={(v) => setFilter(v as any)}>
             <SelectTrigger className="w-[130px]">
               <SelectValue />
@@ -217,7 +217,7 @@ export function ProductTable() {
           </Select>
         </div>
 
-        <PermissionGuard roles={["ADMIN"]}>
+        <PermissionGuard roles={["ROLE_ADMIN"]}>
           <Button onClick={() => { setEditingProduct(null); setModalOpen(true) }}>
             <Plus className="size-4" />
             Add Product
@@ -258,75 +258,75 @@ export function ProductTable() {
             ) : (
               filtered.map((product) => (
                 <TableRow key={product.id}>
-            <TableCell>{product.id}</TableCell>
-            <TableCell>{product.name}</TableCell>
-            <TableCell className="text-right">
-              ${product.price.toFixed(2)}
-            </TableCell>
-            <TableCell>
-              {product.active ? (
-                <Badge>Active</Badge>
-              ) : (
-                <Badge variant="secondary">Inactive</Badge>
-              )}
-            </TableCell>
-            <TableCell>{product.groupId}</TableCell>
-            <TableCell>
-              {new Date(product.createdAt).toLocaleDateString()}
-            </TableCell>
-            <TableCell className="text-right">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm">
-            <MoreHorizontal className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
+                  <TableCell>{product.id}</TableCell>
+                  <TableCell>{product.name}</TableCell>
+                  <TableCell className="text-right">
+                    ${product.price.toFixed(2)}
+                  </TableCell>
+                  <TableCell>
+                    {product.active ? (
+                      <Badge>Active</Badge>
+                    ) : (
+                      <Badge variant="secondary">Inactive</Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>{product.groupId}</TableCell>
+                  <TableCell>
+                    {new Date(product.createdAt).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">
+                          <MoreHorizontal className="size-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end">
-          {/* Detail */}
-          <DropdownMenuItem
-            onClick={() => {
-              setViewingProduct(product)
-              setDrawerOpen(true)
-            }}
-          >
-            <Eye className="size-4 mr-2" />
-            Detail
-          </DropdownMenuItem>
+                      <DropdownMenuContent align="end">
+                        {/* Detail */}
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setViewingProduct(product)
+                            setDrawerOpen(true)
+                          }}
+                        >
+                          <Eye className="size-4 mr-2" />
+                          Detail
+                        </DropdownMenuItem>
 
-          {/* Edit */}
-          {canEdit && (
-            <DropdownMenuItem
-              onClick={() => {
-                setEditingProduct(product)
-                setModalOpen(true)
-              }}
-            >
-              <Pencil className="size-4 mr-2" />
-              Edit
-            </DropdownMenuItem>
-          )}
+                        {/* Edit */}
+                        {canEdit && (
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setEditingProduct(product)
+                              setModalOpen(true)
+                            }}
+                          >
+                            <Pencil className="size-4 mr-2" />
+                            Edit
+                          </DropdownMenuItem>
+                        )}
 
-          {/* Delete */}
-          {canDelete && (
-            <DropdownMenuItem
-              className="text-red-600"
-              onClick={() => {
-                setDeletingProduct(product)
-                setDeleteOpen(true)
-              }}
-            >
-              <Trash2 className="size-4 mr-2" />
-              Delete
-            </DropdownMenuItem>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </TableCell>
-      </TableRow>
-    ))
-  )}
-</TableBody>
+                        {/* Delete */}
+                        {canDelete && (
+                          <DropdownMenuItem
+                            className="text-red-600"
+                            onClick={() => {
+                              setDeletingProduct(product)
+                              setDeleteOpen(true)
+                            }}
+                          >
+                            <Trash2 className="size-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
         </Table>
 
         {!loading && (

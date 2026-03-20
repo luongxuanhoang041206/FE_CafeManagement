@@ -1,7 +1,9 @@
 "use client"
 
-import { useState } from "react"
-import { AuthProvider } from "@/lib/auth/auth-context"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Loader2 } from "lucide-react"
+import { AuthProvider, useAuth } from "@/lib/auth/auth-context"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import { DashboardContent } from "@/components/dashboard-content"
@@ -9,10 +11,27 @@ import { ProductTable } from "@/components/product-table"
 import { EmployeeTable } from "@/components/employee-table"
 import { UserTable } from "@/components/user-table"
 import { PlaceholderPage } from "@/components/placeholder-page"
+import { OrderTable } from "@/components/order-table"
 
 function DashboardShell() {
   const [collapsed, setCollapsed] = useState(false)
   const [activePage, setActivePage] = useState("dashboard")
+  const { isAuthenticated, isLoading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login")
+    }
+  }, [isLoading, isAuthenticated, router])
+
+  if (isLoading || !isAuthenticated) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
@@ -53,10 +72,9 @@ function DashboardShell() {
             </div>
           )}
           {activePage === "orders" && (
-            <PlaceholderPage
-              title="Orders"
-              description="View and manage customer orders."
-            />
+            <div className="space-y-6">
+              <OrderTable />
+            </div>
           )}
           {activePage === "users" && (
             <div className="space-y-6">
