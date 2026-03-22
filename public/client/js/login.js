@@ -111,15 +111,27 @@ loginForm.addEventListener('submit', (event) => {
         body: JSON.stringify({ username: loginKey, password })
     })
         .then(async response => {
+            // if (response.ok) {
+            //     sessionStorage.setItem("currentUser", loginKey);
+            //     showPopup('success', 'Chào mừng trở lại! 🎉<br>Đăng nhập thành công.', () => {
+            //         window.location.href = "/client/index.html";
+            //     });
+            // } else {
+            //     const errorMsg = await response.text();
+            //     showPopup('error', errorMsg || 'Tên đăng nhập hoặc mật khẩu không chính xác!');
+            // }
+            console.log('Status:', response.status) // ← thêm dòng này
             if (response.ok) {
+                console.log('Login OK') // ← thêm dòng này
                 sessionStorage.setItem("currentUser", loginKey);
-                showPopup('success', 'Chào mừng trở lại! 🎉<br>Đăng nhập thành công.', () => {
-                    window.location.href = "/client/index.html";
-                });
+                window.location.href = "/client/index.html";
             } else {
                 const errorMsg = await response.text();
-                showPopup('error', errorMsg || 'Tên đăng nhập hoặc mật khẩu không chính xác!');
+                console.log('Error:', errorMsg) // ← thêm dòng này
             }
+        })
+        .catch((err) => {
+            console.log('Catch error:', err) // ← thêm dòng này
         })
         .catch(() => {
             showPopup('error', 'Không thể kết nối tới máy chủ.<br>Vui lòng thử lại sau!');
