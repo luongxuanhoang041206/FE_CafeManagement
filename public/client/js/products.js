@@ -3,7 +3,7 @@ let typeSelected = "all";
 let priceSelected = "all";
 let currentProduct = null;
 
-fetch("http://localhost:8080/products")
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`)
     .then(res => res.json())
     .then(data => {
         products = data.content || data || [];
@@ -72,7 +72,7 @@ function filterProducts() {
     params.append("page", 0);
     params.append("size", 20);
 
-    fetch(`http://localhost:8080/products/search?${params.toString()}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/search?${params.toString()}`)
         .then(res => res.json())
         .then(data => {
             products = data.content || [];

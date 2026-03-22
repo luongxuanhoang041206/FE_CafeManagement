@@ -1,6 +1,7 @@
 import { LoginAdminRequest } from "@/lib/auth/types"
 
-const API_BASE_URL = "http://localhost:8080"
+import { API_URL } from "./api"
+const API_BASE_URL = API_URL
 
 export async function adminLogin(credentials: LoginAdminRequest): Promise<any> {
   const res = await fetch(`${API_BASE_URL}/admin/login`, {

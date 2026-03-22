@@ -79,7 +79,7 @@ export function CreateProductForm() {
                 imageUrl,
             };
 
-            const response = await fetch("http://localhost:8080/admin/products", {
+            const response = await fetch("${process.env.NEXT_PUBLIC_API_URL}/admin/products", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

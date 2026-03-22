@@ -805,7 +805,7 @@
             };
 
             // Gọi API đặt hàng
-            fetch('http://localhost:8080/orders', {
+            fetch('${process.env.NEXT_PUBLIC_API_URL}/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)

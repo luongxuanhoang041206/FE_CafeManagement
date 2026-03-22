@@ -105,7 +105,7 @@ loginForm.addEventListener('submit', (event) => {
     const loginKey = document.getElementById('loginKey').value;
     const password = document.getElementById('password').value;
 
-    fetch('http://localhost:8080/auth/login', {
+    fetch('${process.env.NEXT_PUBLIC_API_URL}/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: loginKey, password })

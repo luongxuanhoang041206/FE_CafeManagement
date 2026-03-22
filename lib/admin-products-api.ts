@@ -1,6 +1,7 @@
 // import type { Product } from "@/lib/mock-data"
 
-// const API_BASE_URL = "http://localhost:8080"
+import { API_URL } from "./api"
+const API_BASE_URL = API_URL
 
 // interface AdminProductDto {
 //   id: string
@@ -108,7 +109,7 @@
 // }
 import type { Product } from "@/lib/mock-data"
 
-const API_BASE_URL = "http://localhost:8080"
+// API_BASE_URL is now imported from ./api
 
 interface AdminProductDto {
   id: number
