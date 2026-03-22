@@ -3,7 +3,7 @@ let typeSelected = "all";
 let priceSelected = "all";
 let currentProduct = null;
 
-fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`)
+fetch('https://cafemanagement-rgd5.onrender.com/products')
     .then(res => res.json())
     .then(data => {
         products = data.content || data || [];

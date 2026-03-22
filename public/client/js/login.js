@@ -105,7 +105,7 @@ loginForm.addEventListener('submit', (event) => {
     const loginKey = document.getElementById('loginKey').value;
     const password = document.getElementById('password').value;
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+    fetch('https://cafemanagement-rgd5.onrender.com/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: loginKey, password })
