@@ -6,19 +6,15 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  output: 'standalone',
+  // Bỏ output: 'standalone' đi!
   async rewrites() {
     return [
-        {
-            source: '/client/pages/:page',
-            destination: '/client/pages/:page',
-        },
-        {
-            source: '/client/:page',  
-            destination: '/client/:page',
-        },
+      {
+        source: '/client/:path*',
+        destination: '/client/:path*',
+      },
     ]
-},
+  },
 }
 
 export default nextConfig

@@ -105,7 +105,7 @@ loginForm.addEventListener('submit', (event) => {
     const loginKey = document.getElementById('loginKey').value;
     const password = document.getElementById('password').value;
 
-    fetch('${process.env.NEXT_PUBLIC_API_URL}/auth/login', {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: loginKey, password })
@@ -114,7 +114,7 @@ loginForm.addEventListener('submit', (event) => {
             if (response.ok) {
                 sessionStorage.setItem("currentUser", loginKey);
                 showPopup('success', 'Chào mừng trở lại! 🎉<br>Đăng nhập thành công.', () => {
-                    window.location.href = "./client/index.html";
+                    window.location.href = "/client/index.html";
                 });
             } else {
                 const errorMsg = await response.text();
