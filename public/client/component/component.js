@@ -55,12 +55,12 @@ window.CartStore = CartStore;
 const NAVBAR_HTML = `
 <nav class="navbar" id="mainNavbar">
     <div class="navbar-inner">
-        <a href="${ROOT}home.html" class="navbar-logo">
+        <a href="${ROOT}index.html" class="navbar-logo">
             <span class="logo-icon">☕</span>
             <span class="logo-text">Hai Gau<em>Coffee</em></span>
         </a>
         <ul class="navbar-links">
-            <li><a href="${ROOT}home.html"        class="nav-link">Home</a></li>
+            <li><a href="${ROOT}index.html"        class="nav-link">Home</a></li>
             <li><a href="${PAGES}products.html"   class="nav-link">Products</a></li>
             <li><a href="${PAGES}about.html"      class="nav-link">About Us</a></li>
             <li><a href="${PAGES}visit.html"      class="nav-link">Visit</a></li>
@@ -97,7 +97,7 @@ const NAVBAR_HTML = `
 
     <div class="navbar-mobile" id="navMobile">
         <ul>
-            <li><a href="${ROOT}home.html"        class="nav-link">Home</a></li>
+            <li><a href="${ROOT}index.html"        class="nav-link">Home</a></li>
             <li><a href="${PAGES}products.html"   class="nav-link">Products</a></li>
             <li><a href="${PAGES}about.html"      class="nav-link">About Us</a></li>
             <li><a href="${PAGES}visit.html"      class="nav-link">Visit</a></li>
@@ -135,7 +135,7 @@ const FOOTER_HTML = `
         <div class="footer-col">
             <h4 class="footer-heading">Khám phá</h4>
             <ul>
-                <li><a href="${ROOT}home.html">Home</a></li>
+                <li><a href="${ROOT}index.html">Home</a></li>
                 <li><a href="${PAGES}products.html">Thực đơn</a></li>
                 <li><a href="${PAGES}about.html">Về chúng tôi</a></li>
                 <li><a href="${PAGES}visit.html">Ghé thăm</a></li>
@@ -357,7 +357,7 @@ function updateAuthUI() {
 function handleLogout() {
     sessionStorage.removeItem('currentUser');
     CartStore.clearCart();
-    window.location.href = `${ROOT}home.html`;
+    window.location.href = `${ROOT}index.html`;
 }
 
 // ── INJECT + INIT ─────────────────────────────────────
@@ -372,7 +372,7 @@ function initComponents() {
     if (footEl) footEl.outerHTML = FOOTER_HTML;
 
     // Highlight active link
-    const currentPage = location.pathname.split('/').pop() || 'home.html';
+    const currentPage = location.pathname.split('/').pop() || 'index.html';
     document.querySelectorAll('.nav-link').forEach(link => {
         if (link.getAttribute('href').endsWith(currentPage)) link.classList.add('active');
     });
