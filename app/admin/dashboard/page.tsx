@@ -108,3 +108,4 @@ export default function Page() {
     </AuthProvider>
   )
 }
+export const dynamic = 'force-dynamic'
