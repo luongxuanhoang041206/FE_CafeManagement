@@ -2,7 +2,6 @@
 
 import { createContext, useCallback, useContext, useState, useEffect, type ReactNode } from "react"
 import type { Role, User, AuthToken, AuthState } from "./types"
-import { MOCK_USER } from "@/lib/mock-data"
 import { adminLogin } from "@/lib/admin-auth-api"
 
 interface AuthContextValue extends AuthState {
@@ -66,6 +65,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("admin_role")
     setUser(null)
     setToken(null)
+    if (typeof window !== "undefined") {
+      window.location.href = "/admin/login";
+    }
   }, [])
 
   const refreshSession = useCallback(async () => {

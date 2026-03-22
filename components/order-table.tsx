@@ -226,7 +226,18 @@ export function OrderTable() {
                     ${(order.totalAmount || 0).toFixed(2)}
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={STATUS_COLORS[order.status] || ""}>
+                    <Badge
+                      variant="outline"
+                      className={(STATUS_COLORS[order.status] || "") + " cursor-pointer select-none"}
+                      title="Click to toggle status"
+                      onClick={() => {
+                        if (order.status === "PENDING") {
+                          handleUpdateStatus(order.id, "PAID");
+                        } else if (order.status === "PAID") {
+                          handleUpdateStatus(order.id, "PENDING");
+                        }
+                      }}
+                    >
                       {order.status}
                     </Badge>
                   </TableCell>

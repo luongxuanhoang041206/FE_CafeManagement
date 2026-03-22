@@ -1,72 +1,127 @@
-// const form = document.getElementById("form");
-// const password = document.getElementById("password");
-// const confirm = document.getElementById("confirm");
+// ════════════════════════════════════════════════════
+// CUSTOM POPUP — thay thế alert() mặc định
+// ════════════════════════════════════════════════════
+function showPopup(type, message, onConfirm) {
+    document.getElementById('customPopup')?.remove();
 
-// const rules = {
-//     length: v => v.length >= 8,
-//     number: v => /[0-9]/.test(v),
-//     character: v => /[A-Za-z]/.test(v),
-// }
+    const isSuccess = type === 'success';
+    const popup = document.createElement('div');
+    popup.id = 'customPopup';
+    popup.innerHTML = `
+        <div class="popup-overlay">
+            <div class="popup-box popup-${type}">
+                <div class="popup-icon">${isSuccess ? '☕' : '✖'}</div>
+                <p class="popup-message">${message}</p>
+                <button class="popup-btn popup-btn-${type}" id="popupConfirmBtn">
+                    ${isSuccess ? 'Tiếp tục' : 'Thử lại'}
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(popup);
 
-// form.addEventListener("submit", e => {
-//     e.preventDefault();
-// }); 
+    requestAnimationFrame(() => {
+        popup.querySelector('.popup-overlay').classList.add('show');
+        popup.querySelector('.popup-box').classList.add('show');
+    });
 
-// password.addEventListener("input", (e) => {
-//     const value = password.value;
+    document.getElementById('popupConfirmBtn').addEventListener('click', () => {
+        popup.querySelector('.popup-box').classList.remove('show');
+        setTimeout(() => { popup.remove(); onConfirm?.(); }, 250);
+    });
+}
 
-//     for (let rule in rules){
-//         let element = document.getElementById(rule);
-//         element.classList.toggle("valid", rules[rule](value));
-//     }
-// });
+// CSS popup
+const popupStyle = document.createElement('style');
+popupStyle.textContent = `
+    .popup-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(59, 47, 47, 0.45);
+        backdrop-filter: blur(3px);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+    }
+    .popup-overlay.show { opacity: 1; }
 
-// function validatePassword(){
-//     if (password.value !== confirm.value){
-//         confirm.setCustomValidity("Password don not match");
-//     }
-//     else{
-//         confirm.setCustomValidity("");
-//     }
-// }
+    .popup-box {
+        background: #f5f2ed;
+        border-radius: 20px;
+        padding: 40px 36px 32px;
+        width: 340px;
+        text-align: center;
+        box-shadow: 0 24px 64px rgba(59,47,47,0.22);
+        transform: translateY(24px) scale(0.96);
+        transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border-top: 5px solid #b77e4b;
+    }
+    .popup-box.popup-error { border-top-color: #c0392b; }
+    .popup-box.show { transform: translateY(0) scale(1); }
 
-// confirm.addEventListener("input", validatePassword);
-// password.addEventListener("input", validatePassword);
+    .popup-icon {
+        font-size: 2.8rem;
+        margin-bottom: 14px;
+        line-height: 1;
+    }
+    .popup-message {
+        font-family: "Montserrat", sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        color: #3b2f2f;
+        line-height: 1.6;
+        margin-bottom: 24px;
+    }
+    .popup-btn {
+        padding: 10px 32px;
+        border: none;
+        border-radius: 10px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    .popup-btn-success { background: #b77e4b; color: #fff; }
+    .popup-btn-success:hover { background: #d1670b; }
+    .popup-btn-error { background: #3b2f2f; color: #fff; }
+    .popup-btn-error:hover { background: #5c4a3d; }
+    .popup-btn:active { transform: scale(0.96); }
+`;
+document.head.appendChild(popupStyle);
+
+// ════════════════════════════════════════════════════
+// LOGIN FORM
+// ════════════════════════════════════════════════════
 const loginForm = document.getElementById("form");
 
 loginForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    // Lấy giá trị từ ô nhập liệu (ô này giờ dùng chung cho cả User và Email)
     const loginKey = document.getElementById('loginKey').value;
     const password = document.getElementById('password').value;
 
-    const data = {
-        username: loginKey, // Ta vẫn gửi key là 'username' để tương thích với Backend cũ
-        password: password
-    };
-
     fetch('http://localhost:8080/auth/login', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: loginKey, password })
     })
         .then(async response => {
             if (response.ok) {
-                // Lưu giá trị đăng nhập vào session
                 sessionStorage.setItem("currentUser", loginKey);
-
-                alert("Đăng nhập thành công!");
-                window.location.href = "/client/home.html";
+                showPopup('success', 'Chào mừng trở lại! 🎉<br>Đăng nhập thành công.', () => {
+                    window.location.href = "/client/home.html";
+                });
             } else {
                 const errorMsg = await response.text();
-                alert("Thất bại: " + (errorMsg || "Thông tin đăng nhập không chính xác!"));
+                showPopup('error', errorMsg || 'Tên đăng nhập hoặc mật khẩu không chính xác!');
             }
         })
-        .catch(error => {
-            console.error("Lỗi:", error);
-            alert("Không thể kết nối tới Server!");
+        .catch(() => {
+            showPopup('error', 'Không thể kết nối tới máy chủ.<br>Vui lòng thử lại sau!');
         });
 });

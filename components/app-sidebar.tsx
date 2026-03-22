@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import {
   LayoutDashboard,
   Package,
-  ShoppingCart,
+  ClipboardList,
   Users,
   UserCircle,
   Settings,
@@ -27,7 +27,7 @@ const NAV_ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, permission: "view:dashboard" },
   { id: "products", label: "Products", icon: Package, permission: "view:products" },
   { id: "employees", label: "Employees", icon: UserCircle, permission: "view:employees" },
-  { id: "orders", label: "Orders", icon: ShoppingCart, permission: "view:orders" },
+  { id: "orders", label: "Orders", icon: ClipboardList, permission: "view:orders" },
   { id: "users", label: "Users", icon: Users, permission: "view:users" },
   { id: "settings", label: "Settings", icon: Settings, permission: "view:settings" },
 ]

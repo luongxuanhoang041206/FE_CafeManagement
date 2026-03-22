@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Minus, Plus, ShoppingBag, Trash2, Search } from "lucide-react"
+import { Minus, Plus, ClipboardList, Trash2, Search } from "lucide-react"
 
 interface CreateOrderModalProps {
   open: boolean
@@ -32,7 +32,7 @@ interface CreateOrderModalProps {
   onSuccess: () => void
 }
 
-interface CartItem extends Product {
+interface OrderItemTemp extends Product {
   quantity: number
 }
 
@@ -41,10 +41,11 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
   
   const [loading, setLoading] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
-  const [cart, setCart] = useState<CartItem[]>([])
+  const [orderItems, setOrderItems] = useState<OrderItemTemp[]>([])
   
   const [tableId, setTableId] = useState<string>("1")
   const [orderSource, setOrderSource] = useState<string>("IN_STORE")
+  const [methodPayment, setMethodPayment] = useState<string>("CASH")
 
   // Search and Filter State
   const [searchTerm, setSearchTerm] = useState("")
@@ -64,7 +65,7 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
       }).catch(console.error)
       
       // Reset state
-      setCart([])
+      setOrderItems([])
       setTableId("1")
       setOrderSource("IN_STORE")
       setSearchTerm("")
@@ -81,8 +82,8 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
     })
   }, [products, searchTerm, selectedCategory])
 
-  const addToCart = (product: Product) => {
-    setCart(prev => {
+  const addItemToOrder = (product: Product) => {
+    setOrderItems(prev => {
       const existing = prev.find(item => item.id === product.id)
       if (existing) {
         return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
@@ -92,7 +93,7 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
   }
 
   const updateQuantity = (id: number, delta: number) => {
-    setCart(prev => prev.map(item => {
+    setOrderItems(prev => prev.map(item => {
       if (item.id === id) {
         const newQ = item.quantity + delta
         return newQ > 0 ? { ...item, quantity: newQ } : item
@@ -101,21 +102,21 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
     }))
   }
 
-  const removeFromCart = (id: number) => {
-    setCart(prev => prev.filter(item => item.id !== id))
+  const removeFromOrder = (id: number) => {
+    setOrderItems(prev => prev.filter(item => item.id !== id))
   }
 
   const totalAmount = useMemo(() => {
-    return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-  }, [cart])
+    return orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+  }, [orderItems])
 
   const handleSubmit = async () => {
-    if (cart.length === 0) return
+    if (orderItems.length === 0) return
     if (!tableId) return
 
     setLoading(true)
     try {
-      const items: CreateOrderItemRequest[] = cart.map(item => ({
+      const items: CreateOrderItemRequest[] = orderItems.map(item => ({
         productId: item.id,
         quantity: item.quantity,
         price: item.price
@@ -129,7 +130,8 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
         employeeId: user?.id ? parseInt(user.id.replace(/\D/g,'') || '1') : 1, 
         status: "PENDING",
         totalAmount,
-        items
+        items,
+        methodPayment
       })
 
       onSuccess()
@@ -157,7 +159,7 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
             {/* Sticky Search and Filter Header */}
             <div className="p-4 border-b space-y-4 bg-background z-10 sticky top-0">
               <h3 className="font-semibold flex items-center gap-2 text-foreground/80">
-                <ShoppingBag className="size-4"/>
+                <ClipboardList className="size-4"/>
                 Menu Items
               </h3>
               <div className="flex gap-2">
@@ -202,7 +204,7 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
                     <div 
                       key={p.id} 
                       className="group border rounded-lg p-3 bg-card hover:border-primary cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all relative overflow-hidden flex flex-col"
-                      onClick={() => addToCart(p)}
+                      onClick={() => addItemToOrder(p)}
                     >
                       <div className="font-medium text-sm line-clamp-2" title={p.name}>{p.name}</div>
                       
@@ -223,7 +225,7 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
           <div className="w-1/2 md:w-5/12 flex flex-col bg-background">
             <div className="p-4 border-b space-y-4 shrink-0">
               <div className="flex gap-4">
-                <div className="space-y-1 w-1/2">
+                <div className="space-y-1 w-1/3">
                   <Label>Table ID</Label>
                   <Input 
                     type="number" 
@@ -232,7 +234,7 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
                     placeholder="E.g. 1"
                   />
                 </div>
-                <div className="space-y-1 w-1/2">
+                <div className="space-y-1 w-1/3">
                   <Label>Source</Label>
                   <Select value={orderSource} onValueChange={setOrderSource}>
                     <SelectTrigger>
@@ -245,18 +247,32 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
                     </SelectContent>
                   </Select>
                 </div>
+                <div className="space-y-1 w-1/3">
+                  <Label>Payment Method</Label>
+                  <Select value={methodPayment} onValueChange={setMethodPayment}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="CASH">CASH</SelectItem>
+                      <SelectItem value="BANKING">BANKING</SelectItem>
+                      <SelectItem value="MOMO">MOMO</SelectItem>
+                      <SelectItem value="VNPAY">VNPAY</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
 
             <ScrollArea className="flex-1 p-4 bg-muted/5">
-              {cart.length === 0 ? (
+              {orderItems.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-muted-foreground text-sm opacity-60">
-                  <ShoppingBag className="size-8 mb-3 opacity-50" />
-                  Cart is empty
+                  <ClipboardList className="size-8 mb-3 opacity-50" />
+                  No items added
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {cart.map(item => (
+                  {orderItems.map(item => (
                     <div key={item.id} className="flex items-center justify-between border-b pb-3 border-border/50 bg-card p-3 rounded-md shadow-sm">
                       <div className="flex-1 pr-2">
                         <div className="font-medium text-sm leading-tight mb-1">{item.name}</div>
@@ -271,7 +287,7 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
                           <Plus className="size-3" />
                         </Button>
                         <div className="w-[1px] h-4 bg-border mx-1"></div>
-                        <Button variant="ghost" size="icon" className="size-6 h-6 w-6 text-red-500 hover:text-red-600 hover:bg-red-500/10 shrink-0 rounded-sm" onClick={() => removeFromCart(item.id)}>
+                        <Button variant="ghost" size="icon" className="size-6 h-6 w-6 text-red-500 hover:text-red-600 hover:bg-red-500/10 shrink-0 rounded-sm" onClick={() => removeFromOrder(item.id)}>
                           <Trash2 className="size-3" />
                         </Button>
                       </div>
@@ -288,7 +304,7 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
               </div>
               <DialogFooter>
                 <Button variant="outline" className="w-full sm:w-auto" onClick={() => onOpenChange(false)}>Cancel</Button>
-                <Button className="w-full sm:w-auto shadow-md" onClick={handleSubmit} disabled={loading || cart.length === 0 || !tableId}>
+                <Button className="w-full sm:w-auto shadow-md" onClick={handleSubmit} disabled={loading || orderItems.length === 0 || !tableId}>
                   {loading ? "Creating..." : "Submit Order"}
                 </Button>
               </DialogFooter>

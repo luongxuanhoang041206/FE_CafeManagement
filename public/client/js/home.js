@@ -7,7 +7,7 @@ const nextSection = document.querySelector(".next-section");
 const scrollTexts = document.querySelectorAll(".scroll-text");
 
 function currentFrame(index) {
-    return `../imagesHome/ezgif-frame-${String(index).padStart(3, '0')}.png`;
+    return `imagesHome/ezgif-frame-${String(index).padStart(3, '0')}.png`;
 }
 
 // Preload frames
@@ -34,9 +34,9 @@ window.addEventListener("scroll", () => {
     // ---- Điều khiển từng khối chữ theo progress ----
     scrollTexts.forEach(el => {
         const start = parseFloat(el.dataset.start);
-        const end   = parseFloat(el.dataset.end);
+        const end = parseFloat(el.dataset.end);
 
-        const fadeIn  = 0.08;
+        const fadeIn = 0.08;
         const fadeOut = 0.08;
 
         let opacity = 0;
@@ -47,11 +47,11 @@ window.addEventListener("scroll", () => {
             opacity = 1;
             translateY = 0;
         } else if (progress >= start && progress <= end) {
-            const inProgress  = Math.min((progress - start) / fadeIn, 1);
+            const inProgress = Math.min((progress - start) / fadeIn, 1);
             const outProgress = Math.min((end - progress) / fadeOut, 1);
             const t = Math.min(inProgress, outProgress);
 
-            opacity    = t;
+            opacity = t;
             translateY = 50 * (1 - t);
         }
 
@@ -68,10 +68,10 @@ window.addEventListener("scroll", () => {
     // ---- Next section bay lên / ẩn khi scroll lên ----
     if (progress >= 0.88) {
         const t = Math.min((progress - 0.88) / 0.10, 1);
-        nextSection.style.opacity   = t;
+        nextSection.style.opacity = t;
         nextSection.style.transform = `translateY(${80 * (1 - t)}px)`;
     } else {
-        nextSection.style.opacity   = 0;
+        nextSection.style.opacity = 0;
         nextSection.style.transform = `translateY(80px)`;
     }
 

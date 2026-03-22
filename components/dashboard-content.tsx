@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth/auth-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DollarSign, Package, ShoppingCart, Users, UserCircle, Loader2 } from "lucide-react"
+import { DollarSign, Package, ClipboardList, Users, UserCircle, Loader2 } from "lucide-react"
 import { fetchDashboardData, AdminDashboardResponse } from "@/lib/admin-dashboard-api"
 
 export function DashboardContent() {

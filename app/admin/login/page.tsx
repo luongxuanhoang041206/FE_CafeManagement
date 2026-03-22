@@ -31,7 +31,7 @@ export default function LoginPage() {
 
     try {
       await login(username, password)
-      router.push("/")
+      router.push("/admin/dashboard")
     } catch (err: any) {
       setError(err.message || "Failed to login. Please check your credentials.")
     } finally {
@@ -100,9 +100,9 @@ export default function LoginPage() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button 
-                type="submit" 
-                className="w-full relative overflow-hidden group" 
+              <Button
+                type="submit"
+                className="w-full relative overflow-hidden group"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
