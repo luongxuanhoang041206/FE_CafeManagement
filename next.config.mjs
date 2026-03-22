@@ -9,12 +9,16 @@ const nextConfig = {
   output: 'standalone',
   async rewrites() {
     return [
-      {
-        source: '/client/:path*',
-        destination: '/client/:path*',
-      },
+        {
+            source: '/client/pages/:page',
+            destination: '/client/pages/:page',
+        },
+        {
+            source: '/client/:page',  
+            destination: '/client/:page',
+        },
     ]
-  },
+},
 }
 
 export default nextConfig
