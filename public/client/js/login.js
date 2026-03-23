@@ -108,6 +108,7 @@ loginForm.addEventListener('submit', (event) => {
     fetch("https://cafemanagement-rgd5.onrender.com/auth/login", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ username: loginKey, password })
     })
         .then(async response => {
