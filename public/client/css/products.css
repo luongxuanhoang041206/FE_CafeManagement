@@ -2,7 +2,7 @@ body{
     margin:0;
 }
 .hero{
-    background-image: url('/image/productImages/hero-image.jpg');
+    background-image: url('../image/productImages/hero-image.jpg');
     background-size: cover;
     background-position: center 60%;
     height: 100vh;
@@ -72,7 +72,7 @@ border:none;
     transform: scale(1.1);
 }
 .displayProduct{
-    background-image: url('/image/productImages/product-background.jpg');
+    background-image: url('../image/productImages/product-background.jpg');
     background-size: cover;
     background-position: center;
 
