@@ -807,6 +807,7 @@
             // Gọi API đặt hàng
             fetch("https://cafemanagement-rgd5.onrender.com/orders", {
                 method: 'POST',
+                credentials: "include",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
             })
