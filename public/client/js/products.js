@@ -25,7 +25,7 @@ function displayProducts(list) {
         html += `
         <div class="col-md-3 mb-4">
             <div class="card product-card h-100" data-id="${i}" data-aos="fade-up" data-aos-duration="800">
-                <img src="${p.image || 'https://placehold.co/300x300?text=No+Image'}"
+                <img src="${p.image || 'https://placehold.co/300x300?text=No+Image'}" alt="${p.name}"
                      class="card-img-top product-card-img" style="height:300px; object-fit:cover;">
                 <div class="card-body">
                     <h5 class="card-title">${p.name}</h5>
@@ -72,7 +72,7 @@ function filterProducts() {
     params.append("page", 0);
     params.append("size", 20);
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/search?${params.toString()}`)
+    fetch(`https://cafemanagement-rgd5.onrender.com/products/search?${params.toString()}`)
         .then(res => res.json())
         .then(data => {
             products = data.content || [];
@@ -96,7 +96,7 @@ document.getElementById("product-list").addEventListener("click", function (e) {
     if (!card) return;
     currentProduct = products[card.dataset.id];
     document.getElementById("modalTitle").textContent = currentProduct.name;
-    document.getElementById("modalImage").src = currentProduct.image || 'https://placehold.co/300x300?text=No+Image';
+    document.getElementById("modalImage").src = currentProduct.imageUrl || 'https://placehold.co/300x300?text=No+Image';
     document.getElementById("modalDescription").textContent = currentProduct.descr || '';
     document.getElementById("modalPrice").textContent = currentProduct.price
         ? Number(currentProduct.price).toLocaleString('vi-VN') + 'đ' : '';
