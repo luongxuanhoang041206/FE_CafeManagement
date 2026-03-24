@@ -25,7 +25,7 @@ function displayProducts(list) {
         html += `
         <div class="col-md-3 mb-4">
             <div class="card product-card h-100" data-id="${i}" data-aos="fade-up" data-aos-duration="800">
-                <img src="${p.image || 'https://placehold.co/300x300?text=No+Image'}" alt="${p.name}"
+                <img src="${p.imageUrl || 'https://placehold.co/300x300?text=No+Image'}" alt="${p.name}"
                      class="card-img-top product-card-img" style="height:300px; object-fit:cover;">
                 <div class="card-body">
                     <h5 class="card-title">${p.name}</h5>
