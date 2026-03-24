@@ -78,7 +78,7 @@ export async function fetchEmployeesFromApi(
   }
   if (name?.trim()) params.set("name", name.trim())
 
-  const res = await fetch(`${API_BASE_URL}/admin/employee?${params}`, {
+  const res = await fetch(`https://cafemanagement-rgd5.onrender.com/admin/employee?${params}`, {
     credentials: "include"
   })
   const data = await handleResponse<PageResponse<AdminEmployeeDto>>(res)
@@ -106,7 +106,7 @@ export async function saveEmployee(employee: Employee): Promise<Employee> {
       salary: employee.salary,
     }
     const res = await fetch(
-      `${API_BASE_URL}/admin/employee/${encodeURIComponent(employee.id)}`,
+      `https://cafemanagement-rgd5.onrender.com/admin/employee/${encodeURIComponent(employee.id)}`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -124,7 +124,7 @@ export async function saveEmployee(employee: Employee): Promise<Employee> {
     phone: employee.phone,
     salary: employee.salary,
   }
-  const res = await fetch(`${API_BASE_URL}/admin/employee`, {
+  const res = await fetch("https://cafemanagement-rgd5.onrender.com/admin/employee", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -136,7 +136,7 @@ export async function saveEmployee(employee: Employee): Promise<Employee> {
 
 export async function deleteEmployeeById(id: number): Promise<void> {
   const res = await fetch(
-    `${API_BASE_URL}/admin/employee/${encodeURIComponent(id)}`,
+    `https://cafemanagement-rgd5.onrender.com/admin/employee/${encodeURIComponent(id)}`,
     { method: "DELETE", credentials: "include" }
   )
   await handleResponse(res)
@@ -145,7 +145,7 @@ export async function deleteEmployeeById(id: number): Promise<void> {
 export async function getEmployeeById(id: number): Promise<Employee | null> {
   try {
     const res = await fetch(
-      `${API_BASE_URL}/admin/employee/${encodeURIComponent(id)}`,
+      `https://cafemanagement-rgd5.onrender.com/admin/employee/${encodeURIComponent(id)}`,
       { credentials: "include" }
     )
     const dto = await handleResponse<AdminEmployeeDto>(res)

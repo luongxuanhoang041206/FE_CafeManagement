@@ -94,7 +94,7 @@ export async function fetchOrdersFromApi(
 
   // Note: we can also add fromDate, toDate etc if needed
 
-  const res = await fetch(`${API_BASE_URL}/admin/orders?${params.toString()}`, {
+  const res = await fetch(`https://cafemanagement-rgd5.onrender.com/admin/orders?${params.toString()}`, {
     credentials: "include"
   })
   const data = await handleResponse<PageResponse<AdminOrderResponse>>(res)
@@ -122,7 +122,7 @@ export async function getOrderById(id: number): Promise<Order> {
 }
 
 export async function createOrder(data: CreateOrderRequest): Promise<Order> {
-  const res = await fetch(`${API_BASE_URL}/admin/orders`, {
+  const res = await fetch("https://cafemanagement-rgd5.onrender.com/admin/orders", {
     method: "POST",
     credentials: "include",
     headers: {
@@ -136,7 +136,7 @@ export async function createOrder(data: CreateOrderRequest): Promise<Order> {
 }
 
 export async function updateOrderStatus(id: number, status: OrderStatus): Promise<Order> {
-  const res = await fetch(`${API_BASE_URL}/admin/orders/${id}/status`, {
+  const res = await fetch(`https://cafemanagement-rgd5.onrender.com/admin/orders/${id}/status`, {
     method: "PATCH",
     credentials: "include",
     headers: {

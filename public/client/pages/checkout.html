@@ -805,7 +805,7 @@
             };
 
             // Gọi API đặt hàng
-            fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+            fetch("https://cafemanagement-rgd5.onrender.com/orders", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)

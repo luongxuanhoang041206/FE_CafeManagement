@@ -105,7 +105,7 @@ signinForm.addEventListener('submit', (e) => {
     const pwd = document.getElementById('password').value;
 
     // Gửi lên API
-    fetch('https://cafemanagement-rgd5.onrender.com/auth/register', {
+    fetch("https://cafemanagement-rgd5.onrender.com/auth/register", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

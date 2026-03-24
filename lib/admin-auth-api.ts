@@ -4,7 +4,7 @@ import { API_URL } from "./api"
 const API_BASE_URL = API_URL
 
 export async function adminLogin(credentials: LoginAdminRequest): Promise<any> {
-  const res = await fetch(`${API_BASE_URL}/admin/login`, {
+  const res = await fetch("https://cafemanagement-rgd5.onrender.com/admin/login", {
     method: "POST",
     credentials: "include",
     headers: {

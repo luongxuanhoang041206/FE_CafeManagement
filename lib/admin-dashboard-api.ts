@@ -30,7 +30,7 @@ async function handleResponse<T>(res: Response): Promise<T> {
 }
 
 export async function fetchDashboardData(): Promise<AdminDashboardResponse> {
-  const res = await fetch(`${API_BASE_URL}/admin/dashboard`, {
+  const res = await fetch("https://cafemanagement-rgd5.onrender.com/admin/dashboard", {
     credentials: "include",
     headers: {
       'Content-Type': 'application/json',
