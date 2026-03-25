@@ -114,6 +114,7 @@ loginForm.addEventListener('submit', (event) => {
         .then(async response => {
             if (response.ok) {
                 const data = await response.json();
+                console.log('Full response:', response);
                 sessionStorage.setItem("currentUser", loginKey);
                 showPopup('success', 'Chào mừng trở lại! 🎉<br>Đăng nhập thành công.', () => {
                     localStorage.setItem('userId', data.userId);
