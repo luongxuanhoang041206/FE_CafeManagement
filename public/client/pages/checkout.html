@@ -787,12 +787,15 @@
                 return;
             }
 
+            const userId = localStorage.getItem('userId');
+
             // Lấy thông tin đơn hàng cho API /orders
             const items = CartStore.getItems();
             const subtotal = CartStore.totalPrice();
             const total = subtotal + SHIPPING_FEE;
             const methodPayment = document.querySelector('input[name="payment"]:checked').value;
             const orderData = {
+                userId: parseInt(userId),
                 items: items.map(item => ({
                     productId: item.id,
                     quantity: item.quantity,
