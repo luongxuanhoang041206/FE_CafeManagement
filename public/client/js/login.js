@@ -116,7 +116,7 @@ loginForm.addEventListener('submit', (event) => {
                 const data = await response.json();
                 sessionStorage.setItem("currentUser", loginKey);
                 showPopup('success', 'Chào mừng trở lại! 🎉<br>Đăng nhập thành công.', () => {
-                    localStorage.setItem('userId', data.userId.toString());
+                    localStorage.setItem('userId', data.id.toString());
                     window.location.href = "/client/index.html";
                 });
             } else {
