@@ -9,12 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Lexend+Giga:wght@100..900&display=swap"
-        rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../component/component.css">
-
 </head>
 
 <body>
@@ -22,38 +18,41 @@
 
     <div class="sign_in">
         <div class="image">
-            <img src="../image/loginImages/side_picture.avif" alt="image">
+            <img src="../image/loginImages/side_picture.avif" alt="Decorative side image">
         </div>
         <form id="form" class="form_signin" action="#" method="get">
             <div class="head_form">
                 <h1 class="title">This is the online service. We need your information for product, sale and support if
-                    you need </h1>
+                    you need</h1>
                 <p class="description">You know you want to</p>
             </div>
             <div class="body_form">
-                <div class="email_user">
-                    <label for="email">Email</label>
-                    <input type="" name="email" id="loginKey" placeholder="username" required>
-                    <span></span>
+                <div class="left">
+                    <div class="email_user">
+                        <label for="loginKey">Email</label>
+                        <input type="email" name="email" id="loginKey" placeholder="username@email.com" required>
+                        <span></span>
+                    </div>
                 </div>
-                <div class="password_field">
-                    <label for="password">Password</label>
-                    <input type="password" name="password" id="password" placeholder="XXXXXXXX" required minlength="8"
-                        maxlength="100">
-                    <span></span>
+                <div class="right">
+                    <div class="password_field">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password" placeholder="XXXXXXXX" required minlength="8" maxlength="100">
+                        <span></span>
+                    </div>
                 </div>
             </div>
             <div class="foot_form">
-                <button id="btn" type="submit">logn in</button>
-                <p>You don't have an account. <a href="signin.html"><span class="sign">sign in</span></a></p>
+                <button id="btn" type="submit">Log in</button>
+                <p>You don't have an account? <a href="signin.html"><span class="sign">Sign up</span></a></p>
             </div>
         </form>
     </div>
+
     <div id="footer-placeholder"></div>
+
     <script src="../component/component.js"></script>
-
     <script src="../js/login.js" defer></script>
-
 </body>
 
 </html>
