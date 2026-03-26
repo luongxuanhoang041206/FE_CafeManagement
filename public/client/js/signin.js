@@ -99,7 +99,7 @@ signinForm.addEventListener('submit', (e) => {
 
     const firstName = document.getElementById('fname').value.trim();
     const lastName = document.getElementById('lname').value.trim();
-    const username = document.getElementById('username').value.trim();
+    const name = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
     const phone = document.getElementById('phone').value.trim();
     const pwd = document.getElementById('password').value;
@@ -111,7 +111,7 @@ signinForm.addEventListener('submit', (e) => {
         body: JSON.stringify({
             firstName,
             lastName,
-            username,
+            name,
             email,
             phone,
             password: pwd
