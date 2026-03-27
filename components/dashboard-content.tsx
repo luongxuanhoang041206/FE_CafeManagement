@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth/auth-context"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DollarSign, Package, ClipboardList, Users, UserCircle, Loader2 } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { DollarSign, Package, Users, UserCircle, Loader2 } from "lucide-react"
 import { fetchDashboardData, AdminDashboardResponse } from "@/lib/admin-dashboard-api"
 
 export function DashboardContent() {
@@ -87,37 +87,6 @@ export function DashboardContent() {
           />
         )}
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Recent Activity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {data.recentActivities
-              .filter((item) => {
-                if (user.role === "ROLE_ADMIN") return true;
-                if (user.role === "ROLE_MANAGER") return item.type !== "USER";
-                if (user.role === "ROLE_STAFF") return item.type === "ORDER";
-                return false;
-              })
-              .map((item) => (
-                <div key={item.id} className="flex items-center justify-between border-b border-border pb-3 last:border-0 last:pb-0">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{item.action}</p>
-                    <p className="text-xs text-muted-foreground">{item.message}</p>
-                  </div>
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">
-                    {new Date(item.createdAt).toLocaleString()}
-                  </span>
-                </div>
-              ))}
-            {data.recentActivities.length === 0 && (
-              <p className="text-sm text-muted-foreground">No recent activities found.</p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }

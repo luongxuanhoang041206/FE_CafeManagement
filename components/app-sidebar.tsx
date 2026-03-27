@@ -9,7 +9,6 @@ import {
   ClipboardList,
   Users,
   UserCircle,
-  Settings,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"
@@ -29,7 +28,6 @@ const NAV_ITEMS = [
   { id: "employees", label: "Employees", icon: UserCircle, permission: "view:employees" },
   { id: "orders", label: "Orders", icon: ClipboardList, permission: "view:orders" },
   { id: "users", label: "Users", icon: Users, permission: "view:users" },
-  { id: "settings", label: "Settings", icon: Settings, permission: "view:settings" },
 ]
 
 export function AppSidebar({ collapsed, onToggle, activePage, onNavigate }: AppSidebarProps) {

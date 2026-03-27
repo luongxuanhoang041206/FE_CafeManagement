@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/lib/auth/auth-context"
 import { RoleBadge } from "@/components/role-badge"
-import { RoleSwitcher } from "@/components/role-switcher"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -34,7 +33,6 @@ export function AppHeader() {
       </div>
 
       <div className="flex items-center gap-4">
-        <RoleSwitcher />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
