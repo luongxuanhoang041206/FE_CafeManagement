@@ -3,14 +3,13 @@ import { API_URL } from "./api"
 const API_BASE_URL = API_URL
 import type { Product } from "@/lib/mock-data"
 
-// API_BASE_URL is now imported from ./api
 
 interface AdminProductDto {
   id: number
   name: string
   price: number
   active: boolean
-  groupId: string
+  groupId: number
   imageUrl?: string
 }
 
@@ -26,7 +25,7 @@ interface CreateProductRequest {
   name: string
   price: number
   active: boolean
-  groupId: string
+  groupId: number
   imageUrl?: string
 }
 
@@ -34,7 +33,7 @@ interface UpdateProductRequest {
   name: string
   price: number
   active: boolean
-  groupId: string
+  groupId: number
   imageUrl?: string
 }
 

@@ -30,7 +30,7 @@ export function ProductModal({ product, open, onOpenChange, onSave }: ProductMod
   const [formData, setFormData] = useState({
     name: "",
     price: "",
-    groupId: "",
+    groupId: "" as string | number,
     active: true,
     description: "",
     imageUrl: "",
@@ -104,7 +104,7 @@ export function ProductModal({ product, open, onOpenChange, onSave }: ProductMod
         id: product?.id || 0,
         name: formData.name,
         price: parseFloat(formData.price) || 0,
-        groupId: formData.groupId,
+        groupId: Number(formData.groupId) || 0,
         active: formData.active,
         description: formData.description,
         imageUrl: finalImageUrl,
@@ -156,9 +156,10 @@ export function ProductModal({ product, open, onOpenChange, onSave }: ProductMod
               <Label htmlFor="groupId">Group ID</Label>
               <Input
                 id="groupId"
+                type="number"
                 value={formData.groupId}
                 onChange={(e) => setFormData((p) => ({ ...p, groupId: e.target.value }))}
-                placeholder="GRP-X"
+                placeholder="e.g. 1"
                 required
               />
             </div>

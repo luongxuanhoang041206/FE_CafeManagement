@@ -70,7 +70,7 @@ export function ProductDrawer({ product, open, onOpenChange }: ProductDrawerProp
   )
 }
 
-function DetailRow({ label, value }: { label: string; value: string }) {
+function DetailRow({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="flex items-center justify-between">
       <span className="text-sm text-muted-foreground">{label}</span>

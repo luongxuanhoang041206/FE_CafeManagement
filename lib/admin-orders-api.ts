@@ -17,7 +17,7 @@ export interface CreateOrderRequest {
   totalAmount: number
   created_at?: string
   items: CreateOrderItemRequest[]
-  paymentMethod?: string
+  methodPayment?: string
 }
 
 export interface AdminOrderResponse {
@@ -43,7 +43,7 @@ export interface OrderItem {
 // since backend doesn't return items in AdminOrderResponse yet.
 export interface Order extends AdminOrderResponse {
   items: OrderItem[]
-  paymentMethod?: string
+  methodPayment?: string
 }
 
 interface PageResponse<T> {
@@ -70,7 +70,7 @@ function mapDtoToOrder(dto: AdminOrderResponse): Order {
     // Provide a mocked items list since API response does not contain it
     items: [],
     // Provide a mock paymentMethod
-    paymentMethod: dto.status === "PAID" ? "CASH" : undefined
+    methodPayment: dto.status === "PAID" ? "CASH" : undefined
   }
 }
 

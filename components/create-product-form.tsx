@@ -9,8 +9,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 // Initialize Supabase Client
 // Replace these with your actual Supabase URL and Anon Key via your environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export function CreateProductForm() {
@@ -75,7 +75,7 @@ export function CreateProductForm() {
                 name,
                 price: Number(price),
                 active,
-                groupId,
+                groupId: Number(groupId),
                 imageUrl,
             };
 
@@ -156,6 +156,7 @@ export function CreateProductForm() {
                     <Label htmlFor="groupId">Group ID</Label>
                     <Input
                         id="groupId"
+                        type="number"
                         value={groupId}
                         onChange={(e) => setGroupId(e.target.value)}
                         placeholder="e.g. 1"

@@ -61,7 +61,7 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
          
          // Extract unique categories (`groupId`)
          const uniqueGroups = Array.from(new Set(activeProducts.map(p => p.groupId).filter(Boolean)))
-         setCategories(["All", ...uniqueGroups])
+         setCategories(["All", ...uniqueGroups.map(String)])
       }).catch(console.error)
       
       // Reset state
@@ -77,7 +77,7 @@ export function CreateOrderModal({ open, onOpenChange, onSuccess }: CreateOrderM
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
       const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesCategory = selectedCategory === "All" || p.groupId === selectedCategory
+      const matchesCategory = selectedCategory === "All" || p.groupId.toString() === selectedCategory
       return matchesSearch && matchesCategory
     })
   }, [products, searchTerm, selectedCategory])

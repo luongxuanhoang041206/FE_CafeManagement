@@ -110,7 +110,7 @@ export function ProductTable() {
         (p) =>
           p.name.toLowerCase().includes(q) ||
           p.id.toString().toLowerCase().includes(q) ||
-          p.groupId.toLowerCase().includes(q),
+          p.groupId.toString().toLowerCase().includes(q),
       )
     }
 
