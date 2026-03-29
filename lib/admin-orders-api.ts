@@ -39,8 +39,6 @@ export interface OrderItem {
   price: number
 }
 
-// Internal Front-end interface representing a full loaded order 
-// since backend doesn't return items in AdminOrderResponse yet.
 export interface Order extends AdminOrderResponse {
   items: OrderItem[]
   methodPayment?: string
@@ -67,9 +65,7 @@ async function handleResponse<T>(res: Response): Promise<T> {
 function mapDtoToOrder(dto: AdminOrderResponse): Order {
   return {
     ...dto,
-    // Provide a mocked items list since API response does not contain it
     items: [],
-    // Provide a mock paymentMethod
     methodPayment: dto.status === "PAID" ? "CASH" : undefined
   }
 }
