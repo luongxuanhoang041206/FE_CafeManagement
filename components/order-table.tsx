@@ -38,7 +38,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Eye, MoreHorizontal, Plus, Search, CheckCircle, RefreshCcw } from "lucide-react"
 import { OrderDetailModal } from "./order-detail-modal"
-import { CreateOrderModal } from "./create-order-modal"
+import { OrderModal } from "./order-modal"
 
 const ITEMS_PER_PAGE = 10
 
@@ -102,16 +102,24 @@ export function OrderTable() {
   const handleUpdateStatus = useCallback(async (id: number, status: OrderStatus) => {
     try {
       const updated = await updateOrderStatus(id, status)
-      setOrders(prev => prev.map(o => o.id === id ? { ...updated, items: o.items, paymentMethod: o.paymentMethod } : o))
+      setOrders((prev) =>
+        prev.map((order) =>
+          order.id === id ? { ...updated, items: order.items, methodPayment: order.methodPayment } : order,
+        ),
+      )
       if (viewingOrder?.id === id) {
-        setViewingOrder({ ...updated, items: viewingOrder.items, paymentMethod: viewingOrder.paymentMethod })
+        setViewingOrder({
+          ...updated,
+          items: viewingOrder.items,
+          methodPayment: viewingOrder.methodPayment,
+        })
       }
     } catch (error) {
       console.error("Failed to update status", error)
     }
   }, [viewingOrder])
 
-  const canEdit = user ? hasPermission(user.role, "edit:orders") : true // default true for admin UI design
+  const canEdit = user ? hasPermission(user.role, "edit:orders") : false
 
   return (
     <div className="space-y-4">
@@ -306,7 +314,7 @@ export function OrderTable() {
         )}
       </div>
 
-      <CreateOrderModal
+      <OrderModal
         open={createOpen}
         onOpenChange={setCreateOpen}
         onSuccess={loadOrders}

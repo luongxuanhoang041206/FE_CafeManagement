@@ -289,7 +289,7 @@ export function EmployeeTable() {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         onConfirm={() => void handleDelete()}
-        productName={deletingEmployee?.name ?? ""}
+        itemName={deletingEmployee?.name ?? ""}
         title="Delete Employee"
       />
     </div>

@@ -359,7 +359,8 @@ export function ProductTable() {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         onConfirm={() => void handleDelete()}
-        productName={deletingProduct?.name ?? ""}
+        itemName={deletingProduct?.name ?? ""}
+        title="Delete Product"
       />
     </div>
   )

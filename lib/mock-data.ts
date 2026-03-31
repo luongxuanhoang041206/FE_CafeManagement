@@ -9,6 +9,8 @@ export interface Product {
   createdAt: string
   description?: string
   imageUrl?: string
+  available?: boolean
+  maxQuantity?: number | null
 }
 
 export const MOCK_USER: User = {

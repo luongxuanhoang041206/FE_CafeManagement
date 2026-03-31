@@ -15,18 +15,18 @@ interface DeleteConfirmProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onConfirm: () => void
-  productName: string
+  itemName: string
   title?: string
 }
 
-export function DeleteConfirm({ open, onOpenChange, onConfirm, productName, title = "Delete Product" }: DeleteConfirmProps) {
+export function DeleteConfirm({ open, onOpenChange, onConfirm, itemName, title = "Delete Item" }: DeleteConfirmProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete <span className="font-semibold text-foreground">{productName}</span>? This action cannot be undone.
+            Are you sure you want to delete <span className="font-semibold text-foreground">{itemName}</span>? This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

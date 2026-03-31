@@ -1,8 +1,7 @@
-
 import { API_URL } from "./api"
-const API_BASE_URL = API_URL
 import type { Product } from "@/lib/mock-data"
 
+const API_BASE_URL = API_URL || "https://cafemanagement-rgd5.onrender.com"
 
 interface AdminProductDto {
   id: number
@@ -11,6 +10,8 @@ interface AdminProductDto {
   active: boolean
   groupId: number
   imageUrl?: string
+  available?: boolean
+  maxQuantity?: number | null
 }
 
 interface PageResponse<T> {
@@ -47,6 +48,8 @@ function mapDtoToProduct(dto: AdminProductDto): Product {
     createdAt: new Date().toISOString(),
     description: "",
     imageUrl: dto.imageUrl || "",
+    available: dto.available ?? true,
+    maxQuantity: dto.maxQuantity,
   }
 }
 
@@ -71,16 +74,16 @@ export async function fetchProductsFromApi(
   sortBy?: string,
   direction?: string
 ): Promise<{ content: Product[]; totalPages: number; totalElements: number }> {
-
-  let res = await fetch(
-    `https://cafemanagement-rgd5.onrender.com/admin/products?page=${page}&size=${size}`, {
-    credentials: "include"
-  }
-  )
+  let res = await fetch(`${API_BASE_URL}/admin/products?page=${page}&size=${size}`, {
+    credentials: "include",
+  })
   if (sortBy && direction) {
-    res = await fetch(`https://cafemanagement-rgd5.onrender.com/admin/products?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`, {
-      credentials: "include"
-    })
+    res = await fetch(
+      `${API_BASE_URL}/admin/products?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`,
+      {
+        credentials: "include",
+      },
+    )
   }
 
   const data = await handleResponse<PageResponse<AdminProductDto>>(res)
@@ -105,8 +108,8 @@ export async function saveProduct(product: Product): Promise<Product> {
   const hasId = Boolean(product.id)
 
   const url = hasId
-    ? `https://cafemanagement-rgd5.onrender.com/admin/products/${encodeURIComponent(product.id)}`
-    : `https://cafemanagement-rgd5.onrender.com/admin/products`
+    ? `${API_BASE_URL}/admin/products/${encodeURIComponent(product.id)}`
+    : `${API_BASE_URL}/admin/products`
 
   const method = hasId ? "PATCH" : "POST"
 
@@ -125,7 +128,7 @@ export async function saveProduct(product: Product): Promise<Product> {
 
 export async function toggleProductStatus(id: string | number): Promise<Product> {
   const res = await fetch(
-    `https://cafemanagement-rgd5.onrender.com/admin/products/${encodeURIComponent(id)}/status`,
+    `${API_BASE_URL}/admin/products/${encodeURIComponent(id)}/status`,
     { method: "PATCH", credentials: "include" }
   )
 
@@ -135,7 +138,7 @@ export async function toggleProductStatus(id: string | number): Promise<Product>
 
 export async function deleteProductById(id: string | number): Promise<void> {
   const res = await fetch(
-    `https://cafemanagement-rgd5.onrender.com/admin/products/${encodeURIComponent(id)}/delete`,
+    `${API_BASE_URL}/admin/products/${encodeURIComponent(id)}/delete`,
     { method: "DELETE", credentials: "include" }
   )
 

@@ -8,6 +8,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import { DashboardContent } from "@/components/dashboard-content"
 import { ProductTable } from "@/components/product-table"
+import { IngredientTable } from "@/components/ingredient-table"
 import { EmployeeTable } from "@/components/employee-table"
 import { UserTable } from "@/components/user-table"
 import { PlaceholderPage } from "@/components/placeholder-page"
@@ -56,6 +57,19 @@ function DashboardShell() {
                 </p>
               </div>
               <ProductTable />
+            </div>
+          )}
+          {activePage === "ingredients" && (
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-2xl font-semibold tracking-tight text-foreground text-balance">
+                  Ingredient Management
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Track ingredient stock, units, and freshness across the cafe.
+                </p>
+              </div>
+              <IngredientTable />
             </div>
           )}
           {activePage === "employees" && (

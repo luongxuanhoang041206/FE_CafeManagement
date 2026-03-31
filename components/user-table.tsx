@@ -201,7 +201,7 @@ export function UserTable() {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         onConfirm={() => void handleDelete()}
-        productName={deletingUser?.name ?? ""}
+        itemName={deletingUser?.name ?? ""}
         title="Delete User"
       />
     </div>
