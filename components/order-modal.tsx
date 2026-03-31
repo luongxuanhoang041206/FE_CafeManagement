@@ -273,7 +273,7 @@ export function OrderModal({ open, onOpenChange, onSuccess }: OrderModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex h-[90vh] max-w-6xl flex-col overflow-hidden p-0 sm:max-w-[1100px]">
+      <DialogContent className="flex h-[90vh] min-h-0 max-w-6xl flex-col overflow-hidden p-0 sm:max-w-[1100px]">
         <DialogHeader className="border-b px-6 py-4">
           <DialogTitle>Create Order</DialogTitle>
           <DialogDescription>
@@ -281,8 +281,8 @@ export function OrderModal({ open, onOpenChange, onSuccess }: OrderModalProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-1 flex-col overflow-hidden lg:flex-row">
-          <div className="flex flex-1 flex-col border-b bg-muted/10 lg:w-[58%] lg:border-b-0 lg:border-r">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden lg:flex-row">
+          <div className="flex min-h-0 flex-1 flex-col border-b bg-muted/10 lg:w-[58%] lg:border-b-0 lg:border-r">
             <div className="space-y-4 border-b bg-background px-4 py-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
@@ -327,8 +327,8 @@ export function OrderModal({ open, onOpenChange, onSuccess }: OrderModalProps) {
               </div>
             </div>
 
-            <ScrollArea className="flex-1">
-              <div className="grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3">
+            <ScrollArea className="min-h-0 flex-1">
+              <div className="grid gap-4 p-4 pb-6 sm:grid-cols-2 xl:grid-cols-3">
                 {productsLoading ? (
                   Array.from({ length: 6 }).map((_, index) => (
                     <div
@@ -360,7 +360,7 @@ export function OrderModal({ open, onOpenChange, onSuccess }: OrderModalProps) {
             </ScrollArea>
           </div>
 
-          <div className="flex flex-col bg-background lg:w-[42%]">
+          <div className="flex min-h-0 flex-col bg-background lg:w-[42%]">
             <div className="space-y-4 border-b px-4 py-4">
               <div className="flex items-center justify-between">
                 <h3 className="flex items-center gap-2 font-semibold">
@@ -414,7 +414,7 @@ export function OrderModal({ open, onOpenChange, onSuccess }: OrderModalProps) {
               </div>
             </div>
 
-            <ScrollArea className="flex-1 bg-muted/5 px-4 py-4">
+            <ScrollArea className="min-h-0 flex-1 bg-muted/5 px-4 py-4">
               {orderItems.length === 0 ? (
                 <div className="flex h-full flex-col items-center justify-center rounded-2xl border border-dashed p-10 text-center text-sm text-muted-foreground">
                   <ShoppingCart className="mb-3 size-8 opacity-50" />
