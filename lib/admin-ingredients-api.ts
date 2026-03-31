@@ -63,7 +63,7 @@ function toRequestBody(ingredient: IngredientDraft): IngredientRequest {
 }
 
 export async function fetchIngredientsFromApi(): Promise<Ingredient[]> {
-  const res = await fetch(`${API_BASE_URL}/admin/ingredients`, {
+  const res = await fetch(`https://cafemanagement-rgd5.onrender.com/admin/ingredients`, {
     credentials: "include",
   })
 
@@ -74,8 +74,8 @@ export async function fetchIngredientsFromApi(): Promise<Ingredient[]> {
 export async function saveIngredient(ingredient: IngredientDraft): Promise<Ingredient> {
   const hasId = typeof ingredient.id === "number"
   const url = hasId
-    ? `${API_BASE_URL}/admin/ingredients/${encodeURIComponent(ingredient.id)}`
-    : `${API_BASE_URL}/admin/ingredients`
+    ? `https://cafemanagement-rgd5.onrender.com/admin/ingredients/${encodeURIComponent(ingredient.id!)}`
+    : `https://cafemanagement-rgd5.onrender.com/admin/ingredients`
 
   const res = await fetch(url, {
     method: hasId ? "PUT" : "POST",
@@ -91,7 +91,7 @@ export async function saveIngredient(ingredient: IngredientDraft): Promise<Ingre
 }
 
 export async function deleteIngredientById(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE_URL}/admin/ingredients/${encodeURIComponent(id)}`, {
+  const res = await fetch(`https://cafemanagement-rgd5.onrender.com/admin/ingredients/${encodeURIComponent(id)}`, {
     method: "DELETE",
     credentials: "include",
   })

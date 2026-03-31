@@ -74,12 +74,12 @@ export async function fetchProductsFromApi(
   sortBy?: string,
   direction?: string
 ): Promise<{ content: Product[]; totalPages: number; totalElements: number }> {
-  let res = await fetch(`${API_BASE_URL}/admin/products?page=${page}&size=${size}`, {
+  let res = await fetch(`https://cafemanagement-rgd5.onrender.com/admin/products?page=${page}&size=${size}`, {
     credentials: "include",
   })
   if (sortBy && direction) {
     res = await fetch(
-      `${API_BASE_URL}/admin/products?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`,
+      `https://cafemanagement-rgd5.onrender.com/admin/products?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`,
       {
         credentials: "include",
       },
@@ -108,8 +108,8 @@ export async function saveProduct(product: Product): Promise<Product> {
   const hasId = Boolean(product.id)
 
   const url = hasId
-    ? `${API_BASE_URL}/admin/products/${encodeURIComponent(product.id)}`
-    : `${API_BASE_URL}/admin/products`
+    ? `https://cafemanagement-rgd5.onrender.com/admin/products/${encodeURIComponent(product.id)}`
+    : `https://cafemanagement-rgd5.onrender.com/admin/products`
 
   const method = hasId ? "PATCH" : "POST"
 
@@ -128,7 +128,7 @@ export async function saveProduct(product: Product): Promise<Product> {
 
 export async function toggleProductStatus(id: string | number): Promise<Product> {
   const res = await fetch(
-    `${API_BASE_URL}/admin/products/${encodeURIComponent(id)}/status`,
+    `https://cafemanagement-rgd5.onrender.com/admin/products/${encodeURIComponent(id)}/status`,
     { method: "PATCH", credentials: "include" }
   )
 
@@ -138,7 +138,7 @@ export async function toggleProductStatus(id: string | number): Promise<Product>
 
 export async function deleteProductById(id: string | number): Promise<void> {
   const res = await fetch(
-    `${API_BASE_URL}/admin/products/${encodeURIComponent(id)}/delete`,
+    `https://cafemanagement-rgd5.onrender.com/admin/products/${encodeURIComponent(id)}/delete`,
     { method: "DELETE", credentials: "include" }
   )
 
