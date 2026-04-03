@@ -3,7 +3,7 @@ const API_BASE_URL = API_URL
 
 export interface AdminUser {
   id: string
-  name: string
+  username: string
   email: string
   active: boolean
   createdAt: string
@@ -11,7 +11,7 @@ export interface AdminUser {
 
 interface AdminUserDto {
   id: string
-  name: string
+  username: string
   password: string
   email: string
   active: boolean
@@ -29,7 +29,7 @@ interface PageResponse<T> {
 function mapDtoToUser(dto: AdminUserDto): AdminUser {
   return {
     id: dto.id,
-    name: dto.name,
+    username: dto.username,
     email: dto.email,
     active: dto.active,
     createdAt: dto.created_at,

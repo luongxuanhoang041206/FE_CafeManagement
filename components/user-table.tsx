@@ -110,7 +110,7 @@ export function UserTable() {
           <TableHeader>
             <TableRow>
               <TableHead>ID</TableHead>
-              <TableHead>Name</TableHead>
+              <TableHead>Username</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Active</TableHead>
               <TableHead>Created</TableHead>
@@ -136,7 +136,7 @@ export function UserTable() {
               users.map((u) => (
                 <TableRow key={u.id}>
                   <TableCell>{u.id}</TableCell>
-                  <TableCell>{u.name}</TableCell>
+                  <TableCell>{u.username}</TableCell>
                   <TableCell>{u.email}</TableCell>
                   <TableCell>
                     {canManageUsers ? (
@@ -201,7 +201,7 @@ export function UserTable() {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         onConfirm={() => void handleDelete()}
-        itemName={deletingUser?.name ?? ""}
+        itemName={deletingUser?.username ?? ""}
         title="Delete User"
       />
     </div>
