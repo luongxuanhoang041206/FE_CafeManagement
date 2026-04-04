@@ -26,12 +26,41 @@ export interface AdminOrderResponse {
   id: number
   orderSource: string
   tableId: number
+  tableLabel?: string
   userId: number
   employeeId: number
   status: OrderStatus
   totalAmount: number
   created_at: string
   methodPayment?: string
+  address?: string
+  customer?: {
+    id: number
+    name: string
+    username?: string
+    email?: string
+  }
+  employee?: {
+    id: number
+    name: string
+    position?: string
+    phone?: string
+  }
+  payment?: {
+    id: number
+    method?: string
+    amount?: number
+    status?: string
+    paidAt?: string
+  }
+  items?: Array<{
+    id?: number
+    productId: number
+    productName?: string
+    quantity: number
+    price: number
+    lineTotal?: number
+  }>
 }
 
 export interface OrderItem {
@@ -40,6 +69,7 @@ export interface OrderItem {
   name: string
   quantity: number
   price: number
+  lineTotal?: number
 }
 
 export interface Order extends AdminOrderResponse {
@@ -68,8 +98,15 @@ async function handleResponse<T>(res: Response): Promise<T> {
 function mapDtoToOrder(dto: AdminOrderResponse): Order {
   return {
     ...dto,
-    items: [],
-    methodPayment: dto.methodPayment ?? (dto.status === "PAID" ? "CASH" : undefined),
+    items: (dto.items ?? []).map((item) => ({
+      id: item.id,
+      productId: item.productId,
+      name: item.productName ?? `Product #${item.productId}`,
+      quantity: item.quantity,
+      price: item.price,
+      lineTotal: item.lineTotal ?? item.price * item.quantity,
+    })),
+    methodPayment: dto.methodPayment ?? dto.payment?.method ?? (dto.status === "PAID" ? "CASH" : undefined),
   }
 }
 
@@ -110,14 +147,7 @@ export async function getOrderById(id: number): Promise<Order> {
     credentials: "include"
   })
   const dto = await handleResponse<AdminOrderResponse>(res)
-
-  // Return the mapped order (mocking items for the detail view)
-  const order = mapDtoToOrder(dto)
-  order.items = [
-    { productId: 1, name: "Sample Coffee", quantity: 2, price: 50 },
-    { productId: 2, name: "Latte", quantity: 1, price: 60 }
-  ]
-  return order
+  return mapDtoToOrder(dto)
 }
 
 export async function createOrder(data: CreateOrderRequest): Promise<Order> {

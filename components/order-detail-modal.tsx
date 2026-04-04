@@ -56,6 +56,11 @@ export function OrderDetailModal({
   }
 
   const activeOrder = fullOrder || order
+  const displayTable = activeOrder.tableLabel || (activeOrder.tableId ? `Table ${activeOrder.tableId}` : "N/A")
+  const paymentLabel =
+    activeOrder.payment?.method ||
+    activeOrder.methodPayment ||
+    (activeOrder.status === "PAID" ? "PAID" : "UNPAID")
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -65,7 +70,7 @@ export function OrderDetailModal({
             <div>
               <DialogTitle className="text-xl">Order #{activeOrder.id}</DialogTitle>
               <DialogDescription className="mt-1">
-                {new Date(activeOrder.created_at).toLocaleString()} - Table {activeOrder.tableId}
+                {new Date(activeOrder.created_at).toLocaleString()} - {displayTable}
               </DialogDescription>
             </div>
             <Badge variant="outline" className={STATUS_COLORS[activeOrder.status]}>
@@ -106,16 +111,27 @@ export function OrderDetailModal({
 
             <div className="mt-4 space-y-3">
               <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Customer</span>
+                <span className="font-medium">{activeOrder.customer?.name || `User #${activeOrder.userId}`}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Handled By</span>
+                <span className="font-medium">{activeOrder.employee?.name || `Employee #${activeOrder.employeeId}`}</span>
+              </div>
+              <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Source</span>
                 <span className="font-medium">{activeOrder.orderSource}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Payment</span>
-                <span className="font-medium">
-                  {activeOrder.methodPayment ||
-                    (activeOrder.status === "PAID" ? "PAID" : "UNPAID")}
-                </span>
+                <span className="font-medium">{paymentLabel}</span>
               </div>
+              {activeOrder.address ? (
+                <div className="flex justify-between gap-4 text-sm">
+                  <span className="text-muted-foreground">Address</span>
+                  <span className="text-right font-medium">{activeOrder.address}</span>
+                </div>
+              ) : null}
               <Separator />
               <div className="flex justify-between text-lg font-bold">
                 <span>Total</span>
