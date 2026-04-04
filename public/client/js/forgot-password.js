@@ -98,8 +98,7 @@ const forgotPasswordButton = document.getElementById("forgotPasswordBtn");
 
 async function requestResetToken(info) {
     const endpoints = [
-        "https://cafemanagement-rgd5.onrender.com/api/requestResetToken",  // ← THÊM /api
-        "https://cafemanagement-rgd5.onrender.com/api/forgot-password",     // ← THÊM /api
+        "https://cafemanagement-rgd5.onrender.com/requestResetToken"
     ];
 
     let lastErrorMessage = "Unable to send the reset request right now.";
