@@ -10,6 +10,8 @@ import {
   ClipboardList,
   Users,
   UserCircle,
+  Truck,
+  ShoppingCart,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"
@@ -29,6 +31,8 @@ const NAV_ITEMS = [
   { id: "ingredients", label: "Ingredients", icon: FlaskConical, permission: "view:ingredients" },
   { id: "employees", label: "Employees", icon: UserCircle, permission: "view:employees" },
   { id: "orders", label: "Orders", icon: ClipboardList, permission: "view:orders" },
+  { id: "suppliers", label: "Suppliers", icon: Truck, permission: "view:suppliers" },
+  { id: "import-orders", label: "Import Orders", icon: ShoppingCart, permission: "view:import-orders" },
   { id: "users", label: "Users", icon: Users, permission: "view:users" },
 ]
 

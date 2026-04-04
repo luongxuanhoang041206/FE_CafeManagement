@@ -13,6 +13,8 @@ import { EmployeeTable } from "@/components/employee-table"
 import { UserTable } from "@/components/user-table"
 import { PlaceholderPage } from "@/components/placeholder-page"
 import { OrderTable } from "@/components/order-table"
+import { SupplierTable } from "@/components/supplier-table"
+import { ImportOrderTable } from "@/components/import-order-table"
 
 function DashboardShell() {
   const [collapsed, setCollapsed] = useState(false)
@@ -101,6 +103,32 @@ function DashboardShell() {
                 </p>
               </div>
               <UserTable />
+            </div>
+          )}
+          {activePage === "suppliers" && (
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-2xl font-semibold tracking-tight text-foreground text-balance">
+                  Supplier Management
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Manage supplier contact information and maintain reliable sourcing data.
+                </p>
+              </div>
+              <SupplierTable />
+            </div>
+          )}
+          {activePage === "import-orders" && (
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-2xl font-semibold tracking-tight text-foreground text-balance">
+                  Import Order Management
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Track inbound ingredient purchases, review order details, and create new import orders.
+                </p>
+              </div>
+              <ImportOrderTable />
             </div>
           )}
           {activePage === "settings" && (
