@@ -14,8 +14,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+    maximumFractionDigits: 0,
+  }).format(value)
+}
 
 interface OrderDetailModalProps {
   order: Order
@@ -64,9 +79,9 @@ export function OrderDetailModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
-          <div className="flex items-start justify-between pr-4">
+          <div className="flex flex-col gap-3 pr-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <DialogTitle className="text-xl">Order #{activeOrder.id}</DialogTitle>
               <DialogDescription className="mt-1">
@@ -85,57 +100,98 @@ export function OrderDetailModal({
           </div>
         ) : (
           <>
-            <ScrollArea className="mt-2 max-h-[300px] rounded-md border p-4">
-              {activeOrder.items && activeOrder.items.length > 0 ? (
-                <div className="space-y-4">
-                  {activeOrder.items.map((item, index) => (
-                    <div key={index} className="flex justify-between text-sm">
-                      <div>
-                        <span className="font-medium">{item.name}</span>
-                        <div className="text-muted-foreground">Qty: {item.quantity}</div>
-                      </div>
-                      <div className="font-semibold">
-                        ${(item.price * item.quantity).toFixed(2)}
-                      </div>
-                    </div>
-                  ))}
+            <div className="space-y-6">
+              <div className="grid gap-4 rounded-xl border bg-muted/30 p-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Customer</p>
+                  <p className="mt-1 font-semibold">
+                    {activeOrder.customer?.name || `User #${activeOrder.userId}`}
+                  </p>
+                  {activeOrder.customer?.email ? (
+                    <p className="text-sm text-muted-foreground">{activeOrder.customer.email}</p>
+                  ) : null}
                 </div>
-              ) : (
-                <div className="py-4 text-center text-sm text-muted-foreground">
-                  No items listed.
-                  <br />
-                  <span className="text-xs">(Items may not be returned by API yet)</span>
+                <div>
+                  <p className="text-sm text-muted-foreground">Handled By</p>
+                  <p className="mt-1 font-semibold">
+                    {activeOrder.employee?.name || `Employee #${activeOrder.employeeId}`}
+                  </p>
+                  {activeOrder.employee?.position ? (
+                    <p className="text-sm text-muted-foreground">{activeOrder.employee.position}</p>
+                  ) : null}
                 </div>
-              )}
-            </ScrollArea>
+                <div>
+                  <p className="text-sm text-muted-foreground">Source / Payment</p>
+                  <p className="mt-1 font-semibold">{activeOrder.orderSource}</p>
+                  <p className="text-sm text-muted-foreground">{paymentLabel}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Total</p>
+                  <p className="mt-1 text-lg font-semibold text-primary">
+                    {formatCurrency(activeOrder.totalAmount || 0)}
+                  </p>
+                </div>
+              </div>
 
-            <div className="mt-4 space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Customer</span>
-                <span className="font-medium">{activeOrder.customer?.name || `User #${activeOrder.userId}`}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Handled By</span>
-                <span className="font-medium">{activeOrder.employee?.name || `Employee #${activeOrder.employeeId}`}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Source</span>
-                <span className="font-medium">{activeOrder.orderSource}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Payment</span>
-                <span className="font-medium">{paymentLabel}</span>
-              </div>
               {activeOrder.address ? (
-                <div className="flex justify-between gap-4 text-sm">
-                  <span className="text-muted-foreground">Address</span>
-                  <span className="text-right font-medium">{activeOrder.address}</span>
+                <div className="rounded-xl border bg-muted/20 p-4">
+                  <p className="text-sm text-muted-foreground">Delivery Address</p>
+                  <p className="mt-1 font-medium">{activeOrder.address}</p>
                 </div>
               ) : null}
+
               <Separator />
-              <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
-                <span>${(activeOrder.totalAmount || 0).toFixed(2)}</span>
+
+              <div className="overflow-hidden rounded-xl border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Item</TableHead>
+                      <TableHead>Quantity</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead className="text-right">Line Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {activeOrder.items && activeOrder.items.length > 0 ? (
+                      activeOrder.items.map((item) => (
+                        <TableRow key={item.id ?? `${item.productId}-${item.name}`}>
+                          <TableCell className="font-medium">{item.name}</TableCell>
+                          <TableCell>{item.quantity}</TableCell>
+                          <TableCell>{formatCurrency(item.price)}</TableCell>
+                          <TableCell className="text-right font-semibold">
+                            {formatCurrency(item.lineTotal ?? item.price * item.quantity)}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={4} className="py-8 text-center text-muted-foreground">
+                          No items found for this order.
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+
+              <div className="grid gap-4 rounded-xl border bg-muted/20 p-4 sm:grid-cols-3">
+                <div>
+                  <p className="text-sm text-muted-foreground">Table</p>
+                  <p className="mt-1 font-semibold">{displayTable}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Payment Status</p>
+                  <p className="mt-1 font-semibold">{activeOrder.payment?.status || activeOrder.status}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Paid At</p>
+                  <p className="mt-1 font-semibold">
+                    {activeOrder.payment?.paidAt
+                      ? new Date(activeOrder.payment.paidAt).toLocaleString()
+                      : "N/A"}
+                  </p>
+                </div>
               </div>
             </div>
           </>
