@@ -97,39 +97,33 @@ const forgotPasswordForm = document.getElementById("forgotPasswordForm");
 const forgotPasswordButton = document.getElementById("forgotPasswordBtn");
 
 async function requestResetToken(info) {
-    const endpoints = [
-        "https://cafemanagement-rgd5.onrender.com/requestResetToken"
-    ];
+    const endpoint = "https://cafemanagement-rgd5.onrender.com/requestResetToken";
 
-    let lastErrorMessage = "Unable to send the reset request right now.";
+    try {
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ info })
+        });
 
-    for (const endpoint of endpoints) {
-        try {
-            const response = await fetch(endpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({ info })
-            });
+        console.log("📡 Response Status:", response.status);  // ← DEBUG
 
-            if (response.ok) {
-                return;
-            }
-
-            const errorMessage = await response.text();
-            lastErrorMessage = errorMessage || lastErrorMessage;
-
-            if (response.status !== 404) {
-                throw new Error(lastErrorMessage);
-            }
-        } catch (error) {
-            if (!String(error.message || "").includes("404")) {
-                throw error;
-            }
+        if (response.ok) {
+            const data = await response.json();
+            console.log("✅ Success:", data);
+            return;
         }
-    }
 
-    throw new Error(lastErrorMessage);
+        // Nếu không ok, log error
+        const errorMessage = await response.text();
+        console.error("❌ Error Response:", response.status, errorMessage);  // ← DEBUG
+        
+        throw new Error(errorMessage || `HTTP ${response.status}`);
+    } catch (error) {
+        console.error("🔴 Request failed:", error.message);  // ← DEBUG
+        throw error;
+    }
 }
 
 forgotPasswordForm?.addEventListener("submit", async (event) => {
