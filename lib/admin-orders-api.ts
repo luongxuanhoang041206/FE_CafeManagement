@@ -128,7 +128,6 @@ export async function fetchOrdersFromApi(
   if (status) params.append("status", status)
   if (tableId) params.append("tableId", tableId.toString())
 
-  // Note: we can also add fromDate, toDate etc if needed
 
   const res = await fetch(`https://cafemanagement-rgd5.onrender.com/admin/orders?${params.toString()}`, {
     credentials: "include"
@@ -143,7 +142,7 @@ export async function fetchOrdersFromApi(
 }
 
 export async function getOrderById(id: number): Promise<Order> {
-  const res = await fetch(`${API_BASE_URL}/admin/orders/${id}`, {
+  const res = await fetch(`https://cafemanagement-rgd5.onrender.com/admin/orders/${id}`, {
     credentials: "include"
   })
   const dto = await handleResponse<AdminOrderResponse>(res)
