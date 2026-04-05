@@ -9,7 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Alfa+Slab+One&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../component/component.css">
 
     <style>
         :root {
@@ -21,11 +20,7 @@
             --accent: #e74c3c;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Baloo 2', sans-serif;
@@ -34,441 +29,110 @@
             min-height: 100vh;
         }
 
-        /* ── PAGE HEADER ── */
         .checkout-header {
             background: var(--coffee-dark);
             color: #fff;
             padding: 32px 0 28px;
             text-align: center;
         }
-
         .checkout-header h1 {
             font-family: 'Alfa Slab One', serif;
             font-size: 2rem;
             letter-spacing: 1px;
             margin-bottom: 4px;
         }
+        .checkout-header p { font-size: 14px; opacity: 0.6; }
 
-        .checkout-header p {
-            font-size: 14px;
-            opacity: 0.6;
-        }
+        .steps-bar { background: #fff; border-bottom: 1px solid var(--coffee-border); padding: 14px 0; }
+        .steps { display: flex; justify-content: center; gap: 0; list-style: none; }
+        .step { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #bbb; }
+        .step.active { color: var(--coffee-mid); }
+        .step-num { width: 26px; height: 26px; border-radius: 50%; border: 2px solid currentColor; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+        .step.active .step-num { background: var(--coffee-mid); color: #fff; border-color: var(--coffee-mid); }
+        .step-divider { width: 48px; height: 2px; background: var(--coffee-border); margin: 0 8px; align-self: center; }
 
-        /* ── STEPS BAR ── */
-        .steps-bar {
-            background: #fff;
-            border-bottom: 1px solid var(--coffee-border);
-            padding: 14px 0;
-        }
+        .checkout-body { padding: 36px 0 64px; }
 
-        .steps {
-            display: flex;
-            justify-content: center;
-            gap: 0;
-            list-style: none;
-        }
+        .checkout-card { background: #fff; border-radius: 16px; border: 1px solid var(--coffee-border); padding: 28px; margin-bottom: 20px; animation: fadeUp 0.4s ease both; }
+        .checkout-card:nth-child(2) { animation-delay: 0.08s; }
+        .checkout-card:nth-child(3) { animation-delay: 0.16s; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #bbb;
-        }
+        .card-title-line { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--coffee-border); }
+        .card-title-line h5 { font-size: 15px; font-weight: 700; margin: 0; color: var(--coffee-dark); }
+        .card-title-line .icon { font-size: 18px; }
 
-        .step.active {
-            color: var(--coffee-mid);
-        }
+        .cart-item { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f5f0e8; }
+        .cart-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .cart-item-img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; flex-shrink: 0; background: var(--coffee-cream); }
+        .cart-item-info { flex: 1; min-width: 0; }
+        .cart-item-name { font-size: 14px; font-weight: 600; color: var(--coffee-dark); }
+        .cart-item-sub { font-size: 12px; color: #999; margin-top: 2px; }
+        .cart-item-price { font-size: 14px; font-weight: 700; color: var(--coffee-mid); white-space: nowrap; }
+        .cart-item-qty-ctrl { display: flex; align-items: center; gap: 8px; }
+        .qty-btn { width: 28px; height: 28px; border: 1.5px solid var(--coffee-border); background: #fff; border-radius: 8px; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; color: var(--coffee-dark); }
+        .qty-btn:hover { border-color: var(--coffee-mid); color: var(--coffee-mid); }
+        .qty-num { font-size: 14px; font-weight: 700; min-width: 22px; text-align: center; }
+        .cart-remove { background: none; border: none; cursor: pointer; color: #ccc; font-size: 16px; padding: 4px 6px; border-radius: 6px; transition: color 0.15s; }
+        .cart-remove:hover { color: var(--accent); }
+        .empty-cart { text-align: center; padding: 40px 0; color: #bbb; }
+        .empty-cart .icon { font-size: 48px; margin-bottom: 10px; }
+        .empty-cart a { color: var(--coffee-mid); font-weight: 600; text-decoration: none; }
 
-        .step-num {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            border: 2px solid currentColor;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 700;
-        }
+        .form-label { font-size: 13px; font-weight: 600; color: var(--coffee-dark); margin-bottom: 6px; }
+        .form-control, .form-select { border: 1.5px solid var(--coffee-border); border-radius: 10px; font-family: 'Baloo 2', sans-serif; font-size: 14px; padding: 10px 14px; background: #faf8f5; color: var(--coffee-dark); transition: border-color 0.2s, box-shadow 0.2s; }
+        .form-control:focus, .form-select:focus { border-color: var(--coffee-mid); box-shadow: 0 0 0 3px rgba(111,78,55,0.12); background: #fff; outline: none; }
+        .form-control::placeholder { color: #bbb; }
 
-        .step.active .step-num {
-            background: var(--coffee-mid);
-            color: #fff;
-            border-color: var(--coffee-mid);
-        }
+        /* ── SHIPPING INFO BOX ── */
+        .shipping-info-box { margin-top: 12px; padding: 12px 16px; border-radius: 12px; background: #faf8f5; border: 1.5px solid var(--coffee-border); font-size: 13px; display: flex; align-items: center; gap: 10px; transition: all 0.3s ease; min-height: 48px; }
+        .shipping-info-box.loading  { border-color: #f0a500; background: #fffbf0; }
+        .shipping-info-box.success  { border-color: #2ecc71; background: #f0fff6; }
+        .shipping-info-box.error    { border-color: #e74c3c; background: #fff5f5; }
+        .shipping-info-box .ship-icon { font-size: 20px; flex-shrink: 0; }
+        .shipping-info-box .ship-text { flex: 1; }
+        .shipping-info-box .ship-text strong { display: block; color: var(--coffee-dark); }
+        .shipping-info-box .ship-text span { color: #888; font-size: 12px; }
+        .ship-fee-badge { background: var(--coffee-dark); color: #fff; border-radius: 8px; padding: 4px 10px; font-size: 13px; font-weight: 700; white-space: nowrap; }
 
-        .step-divider {
-            width: 48px;
-            height: 2px;
-            background: var(--coffee-border);
-            margin: 0 8px;
-            align-self: center;
-        }
+        .spin { width: 18px; height: 18px; border: 2px solid #e0d0b0; border-top-color: var(--coffee-mid); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ── MAIN LAYOUT ── */
-        .checkout-body {
-            padding: 36px 0 64px;
-        }
+        .ship-tiers { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
+        .ship-tier { flex: 1; min-width: 80px; border: 1.5px solid var(--coffee-border); border-radius: 10px; padding: 8px 10px; text-align: center; font-size: 11px; background: #faf8f5; transition: all 0.2s; }
+        .ship-tier.active-tier { border-color: var(--coffee-mid); background: #fff8f3; font-weight: 700; }
+        .ship-tier .tier-km { font-size: 10px; color: #999; margin-top: 2px; }
+        .ship-tier .tier-price { font-size: 13px; font-weight: 700; color: var(--coffee-mid); }
 
-        /* ── CARDS ── */
-        .checkout-card {
-            background: #fff;
-            border-radius: 16px;
-            border: 1px solid var(--coffee-border);
-            padding: 28px;
-            margin-bottom: 20px;
-            animation: fadeUp 0.4s ease both;
-        }
+        .payment-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width:480px) { .payment-options { grid-template-columns: 1fr; } }
+        .payment-option { border: 2px solid var(--coffee-border); border-radius: 12px; padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: all 0.2s; background: #faf8f5; }
+        .payment-option:hover { border-color: var(--coffee-light); }
+        .payment-option.selected { border-color: var(--coffee-mid); background: #fff8f3; }
+        .payment-option input[type="radio"] { display: none; }
+        .payment-icon { font-size: 24px; }
+        .payment-label { font-size: 13px; font-weight: 600; }
+        .payment-sub { font-size: 11px; color: #999; }
 
-        .checkout-card:nth-child(2) {
-            animation-delay: 0.08s;
-        }
+        .summary-card { background: #fff; border-radius: 16px; border: 1px solid var(--coffee-border); padding: 28px; position: sticky; top: 90px; animation: fadeUp 0.4s ease 0.24s both; }
+        .summary-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; padding: 8px 0; color: #666; }
+        .summary-row.total { border-top: 2px solid var(--coffee-border); margin-top: 8px; padding-top: 16px; font-size: 18px; font-weight: 700; color: var(--coffee-dark); }
+        .summary-row.total span:last-child { color: var(--coffee-mid); }
 
-        .checkout-card:nth-child(3) {
-            animation-delay: 0.16s;
-        }
+        .btn-confirm { width: 100%; padding: 14px; background: var(--coffee-dark); color: #fff; border: none; border-radius: 12px; font-family: 'Baloo 2', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; letter-spacing: 0.4px; margin-top: 20px; transition: background 0.2s, transform 0.1s; position: relative; overflow: hidden; }
+        .btn-confirm:hover { background: var(--coffee-mid); }
+        .btn-confirm:active { transform: scale(0.98); }
+        .btn-confirm:disabled { background: #ccc; cursor: not-allowed; }
 
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(16px);
-            }
+        .ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.3); transform: scale(0); animation: rippleAnim 0.6s linear; pointer-events: none; }
+        @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        .summary-note { font-size: 12px; color: #aaa; text-align: center; margin-top: 12px; line-height: 1.5; }
 
-        .card-title-line {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid var(--coffee-border);
-        }
+        .toast-success { position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-80px); background: #2ecc71; color: #fff; padding: 14px 28px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 99999; box-shadow: 0 8px 24px rgba(0,0,0,0.15); transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+        .toast-success.show { transform: translateX(-50%) translateY(0); }
 
-        .card-title-line h5 {
-            font-size: 15px;
-            font-weight: 700;
-            margin: 0;
-            color: var(--coffee-dark);
-        }
-
-        .card-title-line .icon {
-            font-size: 18px;
-        }
-
-        /* ── CART ITEMS ── */
-        .cart-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 0;
-            border-bottom: 1px solid #f5f0e8;
-        }
-
-        .cart-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .cart-item-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            object-fit: cover;
-            flex-shrink: 0;
-            background: var(--coffee-cream);
-        }
-
-        .cart-item-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .cart-item-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--coffee-dark);
-        }
-
-        .cart-item-sub {
-            font-size: 12px;
-            color: #999;
-            margin-top: 2px;
-        }
-
-        .cart-item-price {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--coffee-mid);
-            white-space: nowrap;
-        }
-
-        .cart-item-qty-ctrl {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .qty-btn {
-            width: 28px;
-            height: 28px;
-            border: 1.5px solid var(--coffee-border);
-            background: #fff;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.15s;
-            color: var(--coffee-dark);
-        }
-
-        .qty-btn:hover {
-            border-color: var(--coffee-mid);
-            color: var(--coffee-mid);
-        }
-
-        .qty-num {
-            font-size: 14px;
-            font-weight: 700;
-            min-width: 22px;
-            text-align: center;
-        }
-
-        .cart-remove {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #ccc;
-            font-size: 16px;
-            padding: 4px 6px;
-            border-radius: 6px;
-            transition: color 0.15s;
-        }
-
-        .cart-remove:hover {
-            color: var(--accent);
-        }
-
-        .empty-cart {
-            text-align: center;
-            padding: 40px 0;
-            color: #bbb;
-        }
-
-        .empty-cart .icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
-        .empty-cart a {
-            color: var(--coffee-mid);
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        /* ── FORM ── */
-        .form-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--coffee-dark);
-            margin-bottom: 6px;
-        }
-
-        .form-control,
-        .form-select {
-            border: 1.5px solid var(--coffee-border);
-            border-radius: 10px;
-            font-family: 'Baloo 2', sans-serif;
-            font-size: 14px;
-            padding: 10px 14px;
-            background: #faf8f5;
-            color: var(--coffee-dark);
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--coffee-mid);
-            box-shadow: 0 0 0 3px rgba(111, 78, 55, 0.12);
-            background: #fff;
-            outline: none;
-        }
-
-        .form-control::placeholder {
-            color: #bbb;
-        }
-
-        /* ── PAYMENT OPTIONS ── */
-        .payment-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        @media (max-width: 480px) {
-            .payment-options {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .payment-option {
-            border: 2px solid var(--coffee-border);
-            border-radius: 12px;
-            padding: 14px 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.2s;
-            background: #faf8f5;
-        }
-
-        .payment-option:hover {
-            border-color: var(--coffee-light);
-        }
-
-        .payment-option.selected {
-            border-color: var(--coffee-mid);
-            background: #fff8f3;
-        }
-
-        .payment-option input[type="radio"] {
-            display: none;
-        }
-
-        .payment-icon {
-            font-size: 24px;
-        }
-
-        .payment-label {
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .payment-sub {
-            font-size: 11px;
-            color: #999;
-        }
-
-        /* ── ORDER SUMMARY (sticky right) ── */
-        .summary-card {
-            background: #fff;
-            border-radius: 16px;
-            border: 1px solid var(--coffee-border);
-            padding: 28px;
-            position: sticky;
-            top: 90px;
-            animation: fadeUp 0.4s ease 0.24s both;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            padding: 8px 0;
-            color: #666;
-        }
-
-        .summary-row.total {
-            border-top: 2px solid var(--coffee-border);
-            margin-top: 8px;
-            padding-top: 16px;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--coffee-dark);
-        }
-
-        .summary-row.total span:last-child {
-            color: var(--coffee-mid);
-        }
-
-        /* ── CONFIRM BUTTON ── */
-        .btn-confirm {
-            width: 100%;
-            padding: 14px;
-            background: var(--coffee-dark);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-family: 'Baloo 2', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            letter-spacing: 0.4px;
-            margin-top: 20px;
-            transition: background 0.2s, transform 0.1s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-confirm:hover {
-            background: var(--coffee-mid);
-        }
-
-        .btn-confirm:active {
-            transform: scale(0.98);
-        }
-
-        .btn-confirm:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        /* ── RIPPLE ── */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(0);
-            animation: rippleAnim 0.6s linear;
-            pointer-events: none;
-        }
-
-        @keyframes rippleAnim {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-
-        /* ── NOTE ── */
-        .summary-note {
-            font-size: 12px;
-            color: #aaa;
-            text-align: center;
-            margin-top: 12px;
-            line-height: 1.5;
-        }
-
-        /* ── SUCCESS TOAST ── */
-        .toast-success {
-            position: fixed;
-            top: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-80px);
-            background: #2ecc71;
-            color: #fff;
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            z-index: 99999;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .toast-success.show {
-            transform: translateX(-50%) translateY(0);
-        }
+        .fee-updating { opacity: 0.5; font-style: italic; }
     </style>
 </head>
 
@@ -476,38 +140,29 @@
 
     <div id="navbar-placeholder"></div>
 
-    <!-- PAGE HEADER -->
     <div class="checkout-header">
         <h1>☕ Thanh Toán</h1>
         <p>Hoàn tất đơn hàng của bạn</p>
     </div>
 
-    <!-- STEPS -->
     <div class="steps-bar">
         <ul class="steps">
-            <li class="step active">
-                <span class="step-num">1</span> Giỏ hàng
-            </li>
+            <li class="step active"><span class="step-num">1</span> Giỏ hàng</li>
             <div class="step-divider"></div>
-            <li class="step active">
-                <span class="step-num">2</span> Thông tin
-            </li>
+            <li class="step active"><span class="step-num">2</span> Thông tin</li>
             <div class="step-divider"></div>
-            <li class="step">
-                <span class="step-num">3</span> Xác nhận
-            </li>
+            <li class="step"><span class="step-num">3</span> Xác nhận</li>
         </ul>
     </div>
 
-    <!-- BODY -->
     <div class="checkout-body">
         <div class="container">
             <div class="row g-4">
 
-                <!-- LEFT: Cart + Form + Payment -->
+                <!-- LEFT -->
                 <div class="col-lg-7">
 
-                    <!-- 1. Danh sách sản phẩm -->
+                    <!-- 1. Sản phẩm -->
                     <div class="checkout-card">
                         <div class="card-title-line">
                             <span class="icon">🛒</span>
@@ -517,9 +172,7 @@
                                 0 món
                             </span>
                         </div>
-                        <div id="checkoutItems">
-                            <!-- render bằng JS -->
-                        </div>
+                        <div id="checkoutItems"></div>
                     </div>
 
                     <!-- 2. Thông tin giao hàng -->
@@ -543,22 +196,56 @@
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Địa chỉ giao hàng *</label>
-                                <input type="text" id="address" class="form-control" placeholder="Số nhà, tên đường...">
+                                <input type="text" id="address" class="form-control"
+                                    placeholder="Số nhà, tên đường, phường/xã...">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Quận / Huyện</label>
+                                <label class="form-label">Quận / Huyện *</label>
                                 <input type="text" id="district" class="form-control" placeholder="Đống Đa">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Tỉnh / Thành phố</label>
+                                <label class="form-label">Tỉnh / Thành phố *</label>
                                 <select id="city" class="form-select">
                                     <option value="">-- Chọn thành phố --</option>
-                                    <option value="hanoi" selected>Hà Nội</option>
-                                    <option value="hcm">TP. Hồ Chí Minh</option>
-                                    <option value="danang">Đà Nẵng</option>
-                                    <option value="other">Khác</option>
+                                    <option value="Hà Nội" selected>Hà Nội</option>
+                                    <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                                    <option value="Đà Nẵng">Đà Nẵng</option>
+                                    <option value="Hải Phòng">Hải Phòng</option>
+                                    <option value="Cần Thơ">Cần Thơ</option>
+                                    <option value="Khác">Khác</option>
                                 </select>
                             </div>
+
+                            <!-- SHIPPING INFO BOX -->
+                            <div class="col-12">
+                                <div class="shipping-info-box" id="shippingInfoBox">
+                                    <span class="ship-icon">🚚</span>
+                                    <div class="ship-text">
+                                        <strong>Phí giao hàng theo khoảng cách</strong>
+                                        <span>Nhập đầy đủ địa chỉ + quận + thành phố để tính tự động</span>
+                                    </div>
+                                </div>
+
+                                <div class="ship-tiers" id="shipTiers">
+                                    <div class="ship-tier" data-tier="0">
+                                        <div class="tier-price">15.000đ</div>
+                                        <div class="tier-km">0 – 3 km</div>
+                                    </div>
+                                    <div class="ship-tier" data-tier="1">
+                                        <div class="tier-price">25.000đ</div>
+                                        <div class="tier-km">3 – 7 km</div>
+                                    </div>
+                                    <div class="ship-tier" data-tier="2">
+                                        <div class="tier-price">35.000đ</div>
+                                        <div class="tier-km">7 – 15 km</div>
+                                    </div>
+                                    <div class="ship-tier" data-tier="3">
+                                        <div class="tier-price">50.000đ</div>
+                                        <div class="tier-km">&gt; 15 km</div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-12">
                                 <label class="form-label">Ghi chú đơn hàng</label>
                                 <textarea id="note" class="form-control" rows="2"
@@ -611,7 +298,7 @@
 
                 </div>
 
-                <!-- RIGHT: Order Summary -->
+                <!-- RIGHT: Summary -->
                 <div class="col-lg-5">
                     <div class="summary-card">
                         <div class="card-title-line">
@@ -619,7 +306,6 @@
                             <h5>Tóm tắt đơn hàng</h5>
                         </div>
 
-                        <!-- Mini item list trong summary -->
                         <div id="summaryItems" style="margin-bottom:16px;"></div>
 
                         <div class="summary-row">
@@ -627,8 +313,11 @@
                             <span id="subtotal">0đ</span>
                         </div>
                         <div class="summary-row">
-                            <span>Phí giao hàng</span>
-                            <span id="shippingFee">15.000đ</span>
+                            <span>
+                                Phí giao hàng
+                                <span id="distanceBadge" style="font-size:11px;color:#aaa;margin-left:4px;"></span>
+                            </span>
+                            <span id="shippingFeeDisplay">15.000đ</span>
                         </div>
                         <div class="summary-row">
                             <span>Giảm giá</span>
@@ -654,7 +343,6 @@
         </div>
     </div>
 
-    <!-- SUCCESS TOAST -->
     <div class="toast-success" id="toastSuccess">
         ✅ Đặt hàng thành công! Cảm ơn bạn đã tin tưởng Hai Gau Coffee ☕
     </div>
@@ -662,187 +350,417 @@
     <div id="footer-placeholder"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../component/component.js"></script>
+
     <script>
-        // ════════════════════════════════════════════════════
-        // CHECKOUT PAGE JS
-        // ════════════════════════════════════════════════════
-        const SHIPPING_FEE = 15000;
+    // ════════════════════════════════════════════════════
+    //  CONFIG — cửa hàng cố định
+    // ════════════════════════════════════════════════════
+    const STORE_LAT = 21.02896;
+    const STORE_LNG = 105.78172; // Số 3, Phường Láng, Cầu Giấy, Hà Nội
 
-        // ── Render cart items ─────────────────────────────
-        function renderCheckout() {
-            const items = CartStore.getItems();
-            const itemsEl = document.getElementById('checkoutItems');
-            const summaryEl = document.getElementById('summaryItems');
-            const countEl = document.getElementById('itemCount');
-            const subtotalEl = document.getElementById('subtotal');
-            const totalEl = document.getElementById('grandTotal');
-            const confirmBtn = document.getElementById('confirmBtn');
+    const SHIP_TIERS = [
+        { maxKm: 3,        fee: 15000, label: '0–3 km'  },
+        { maxKm: 7,        fee: 25000, label: '3–7 km'  },
+        { maxKm: 15,       fee: 35000, label: '7–15 km' },
+        { maxKm: Infinity, fee: 50000, label: '>15 km'  },
+    ];
 
-            const total = CartStore.totalItems();
-            countEl.textContent = `${total} món`;
+    let currentShippingFee = 15000;
+    let geocodeTimer = null;
+    let lastGeoQuery = '';
+    let abortCtrl    = null;
 
-            if (items.length === 0) {
-                itemsEl.innerHTML = `
-            <div class="empty-cart">
-                <div class="icon">🛒</div>
-                <p>Giỏ hàng trống</p>
-                <a href="products.html">← Quay lại mua sắm</a>
-            </div>`;
-                summaryEl.innerHTML = '';
-                subtotalEl.textContent = '0đ';
-                totalEl.textContent = '0đ';
-                document.getElementById('shippingFee').textContent = '0đ';
-                confirmBtn.disabled = true;
-                return;
-            }
+    // ════════════════════════════════════════════════════
+    //  CHUẨN HÓA ĐỊA CHỈ
+    //  Mục tiêu: tạo query rõ ràng để Nominatim parse tốt hơn
+    //  - Thêm prefix "Quận/Huyện/Thị xã" đúng
+    //  - Map tên thành phố về dạng đầy đủ tiếng Việt + tiếng Anh
+    // ════════════════════════════════════════════════════
+    const HUYEN_LIST = [
+        'Đông Anh','Sóc Sơn','Mê Linh','Gia Lâm','Thanh Trì',
+        'Hoài Đức','Đan Phượng','Phúc Thọ','Thạch Thất','Quốc Oai',
+        'Chương Mỹ','Thanh Oai','Thường Tín','Phú Xuyên','Ứng Hòa','Mỹ Đức',
+        'Củ Chi','Hóc Môn','Bình Chánh','Nhà Bè','Cần Giờ',
+    ];
+    const THI_XA_LIST = ['Sơn Tây','Bỉm Sơn','Cửa Lò','Thái Hòa'];
 
-            confirmBtn.disabled = false;
+    function normalizeDistrict(raw) {
+        if (!raw) return '';
+        raw = raw.trim();
+        // Đã có prefix rồi → giữ nguyên
+        if (/^(quận|huyện|thị xã|thành phố|tp\.?)\s/i.test(raw)) return raw;
+        // Số thuần → Quận số (VD: "1" → "Quận 1")
+        if (/^\d+$/.test(raw)) return 'Quận ' + raw;
+        const lower = raw.toLowerCase();
+        if (THI_XA_LIST.some(t => t.toLowerCase() === lower))  return 'Thị xã ' + raw;
+        if (HUYEN_LIST.some(h  => h.toLowerCase()  === lower)) return 'Huyện '  + raw;
+        return 'Quận ' + raw;
+    }
 
-            // Full item list (left column)
-            itemsEl.innerHTML = items.map(item => `
-        <div class="cart-item" data-id="${item.id}">
-            <img class="cart-item-img"
-                 src="${item.image || 'https://placehold.co/60x60?text=☕'}"
-                 alt="${item.name}"
-                 onerror="this.src='https://placehold.co/60x60?text=☕'">
-            <div class="cart-item-info">
-                <div class="cart-item-name">${item.name}</div>
-                <div class="cart-item-sub">${fmt(item.price)} / ly</div>
-            </div>
-            <div class="cart-item-qty-ctrl">
-                <button class="qty-btn" data-action="dec" data-id="${item.id}">−</button>
-                <span class="qty-num">${item.quantity}</span>
-                <button class="qty-btn" data-action="inc" data-id="${item.id}">+</button>
-            </div>
-            <div class="cart-item-price">${fmt(item.price * item.quantity)}</div>
-            <button class="cart-remove" data-action="remove" data-id="${item.id}" title="Xóa">✕</button>
-        </div>
-    `).join('');
+    const CITY_VI = {
+        'Hà Nội':           'Hà Nội',
+        'TP. Hồ Chí Minh':  'Thành phố Hồ Chí Minh',
+        'Đà Nẵng':          'Đà Nẵng',
+        'Hải Phòng':        'Hải Phòng',
+        'Cần Thơ':          'Cần Thơ',
+    };
+    const CITY_EN = {
+        'Hà Nội':           'Hanoi',
+        'TP. Hồ Chí Minh':  'Ho Chi Minh City',
+        'Đà Nẵng':          'Da Nang',
+        'Hải Phòng':        'Hai Phong',
+        'Cần Thơ':          'Can Tho',
+    };
 
-            // Mini list (right summary column)
-            summaryEl.innerHTML = items.map(item => `
-        <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:#666;border-bottom:1px solid #f5f0e8;">
-            <span>${item.name} × ${item.quantity}</span>
-            <span style="font-weight:600;color:var(--coffee-dark)">${fmt(item.price * item.quantity)}</span>
-        </div>
-    `).join('');
+    // ════════════════════════════════════════════════════
+    //  NOMINATIM — không dùng custom header (tránh CORS preflight)
+    //  Thử 3 query từ chi tiết → chung dần
+    // ════════════════════════════════════════════════════
+    async function nominatimSearch(q, signal) {
+        const url = 'https://nominatim.openstreetmap.org/search?' +
+            new URLSearchParams({ q, format: 'json', limit: '1', countrycodes: 'vn' });
+        const res  = await fetch(url, { signal });
+        const data = await res.json();
+        return data;
+    }
 
-            // Totals
-            const subtotal = CartStore.totalPrice();
-            const grandTotal = subtotal + SHIPPING_FEE;
-            subtotalEl.textContent = fmt(subtotal);
-            totalEl.textContent = fmt(grandTotal);
-            document.getElementById('shippingFee').textContent = fmt(SHIPPING_FEE);
+    async function geocodeAddress(address, district, city, signal) {
+        const distNorm = normalizeDistrict(district);
+        const cityVi   = CITY_VI[city] || city;
+        const cityEn   = CITY_EN[city] || city;
 
-            // Gắn event cho qty buttons & remove
-            itemsEl.querySelectorAll('[data-action]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const id = btn.dataset.id;
-                    const action = btn.dataset.action;
-                    const cur = CartStore.getItems().find(i => i.id === id);
-                    if (action === 'inc') CartStore.updateQuantity(id, (cur?.quantity || 0) + 1);
-                    if (action === 'dec') CartStore.updateQuantity(id, (cur?.quantity || 1) - 1);
-                    if (action === 'remove') CartStore.removeItem(id);
-                });
-            });
+        // Query 1: số nhà + đường + quận + tỉnh (tiếng Việt đầy đủ)
+        if (address) {
+            const q1 = [address, distNorm, cityVi, 'Việt Nam'].filter(Boolean).join(', ');
+            const r1 = await nominatimSearch(q1, signal);
+            if (r1.length) return { lat: +r1[0].lat, lng: +r1[0].lon, found: r1[0].display_name };
         }
 
-        // Format tiền VND
-        function fmt(price) {
-            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+        // Query 2: chỉ quận + tỉnh (tiếng Việt) — dùng khi địa chỉ chi tiết không tìm được
+        const q2 = [distNorm, cityVi, 'Việt Nam'].filter(Boolean).join(', ');
+        const r2 = await nominatimSearch(q2, signal);
+        if (r2.length) return { lat: +r2[0].lat, lng: +r2[0].lon, found: r2[0].display_name, approximate: true };
+
+        // Query 3: fallback tiếng Anh (Nominatim parse tốt hơn với một số địa danh)
+        const distEn = distNorm
+            .replace(/^Quận\s/,   'District ')
+            .replace(/^Huyện\s/,  'District ')
+            .replace(/^Thị xã\s/, 'Town ');
+        const q3 = [distEn, cityEn, 'Vietnam'].filter(Boolean).join(', ');
+        const r3 = await nominatimSearch(q3, signal);
+        if (r3.length) return { lat: +r3[0].lat, lng: +r3[0].lon, found: r3[0].display_name, approximate: true };
+
+        throw new Error('Không tìm thấy địa chỉ. Kiểm tra lại Quận/Huyện và Thành phố.');
+    }
+
+    // ════════════════════════════════════════════════════
+    //  OSRM — khoảng cách đường bộ thực tế (thay Haversine)
+    //  profile "bike" ≈ xe máy
+    // ════════════════════════════════════════════════════
+    async function getOsrmDistance(destLat, destLng, signal) {
+        const url = `https://router.project-osrm.org/route/v1/bike/` +
+                    `${STORE_LNG},${STORE_LAT};${destLng},${destLat}` +
+                    `?overview=false&alternatives=false`;
+        const res  = await fetch(url, { signal });
+        const json = await res.json();
+        if (json.code !== 'Ok' || !json.routes?.length)
+            throw new Error('Không tính được tuyến đường.');
+        return {
+            km:  json.routes[0].distance / 1000,
+            min: Math.ceil(json.routes[0].duration / 60),
+        };
+    }
+
+    // ════════════════════════════════════════════════════
+    //  UI HELPERS
+    // ════════════════════════════════════════════════════
+    function getShipFee(km) {
+        for (const t of SHIP_TIERS) if (km <= t.maxKm) return { fee: t.fee, label: t.label };
+        return { fee: 50000, label: '>15 km' };
+    }
+
+    function highlightTier(km) {
+        const idx = (km == null) ? -1 : SHIP_TIERS.findIndex(t => km <= t.maxKm);
+        document.querySelectorAll('.ship-tier').forEach((el, i) =>
+            el.classList.toggle('active-tier', i === idx));
+    }
+
+    function setShippingBox(state, opts = {}) {
+        const box = document.getElementById('shippingInfoBox');
+        box.className = 'shipping-info-box ' + (state || '');
+        let html = '';
+        if (state === 'loading') {
+            html = `<div class="spin"></div>
+                    <div class="ship-text">
+                        <strong>Đang tính phí ship…</strong>
+                        <span>Đang định vị và tính tuyến đường thực tế</span>
+                    </div>`;
+        } else if (state === 'success') {
+            highlightTier(opts.km);
+            const approxNote = opts.approximate
+                ? ' <span style="color:#f0a500;font-size:11px;">(ước tính theo quận)</span>' : '';
+            html = `<span class="ship-icon">🚚</span>
+                    <div class="ship-text">
+                        <strong>~${opts.km.toFixed(1)} km &bull; ${opts.min} phút${approxNote}</strong>
+                        <span style="word-break:break-word;">${opts.found || ''}</span>
+                    </div>
+                    <span class="ship-fee-badge">${fmt(opts.fee)}</span>`;
+        } else if (state === 'error') {
+            highlightTier(null);
+            html = `<span class="ship-icon">⚠️</span>
+                    <div class="ship-text">
+                        <strong>${opts.msg || 'Không tính được phí ship'}</strong>
+                        <span>Dùng phí mặc định: ${fmt(15000)}</span>
+                    </div>`;
+        } else {
+            highlightTier(null);
+            html = `<span class="ship-icon">🚚</span>
+                    <div class="ship-text">
+                        <strong>Phí giao hàng theo khoảng cách</strong>
+                        <span>Nhập Quận/Huyện + Thành phố để tính tự động</span>
+                    </div>`;
+        }
+        box.innerHTML = html;
+    }
+
+    function updateSummaryFee(fee, distLabel) {
+        const feeEl  = document.getElementById('shippingFeeDisplay');
+        const distEl = document.getElementById('distanceBadge');
+        if (fee === null) {
+            feeEl.innerHTML    = '<span class="fee-updating">Đang tính…</span>';
+            distEl.textContent = '';
+        } else {
+            feeEl.textContent  = fmt(fee);
+            distEl.textContent = distLabel ? `(${distLabel})` : '';
+        }
+    }
+
+    // ════════════════════════════════════════════════════
+    //  MAIN: calcShipping  — Nominatim → OSRM → bảng phí
+    // ════════════════════════════════════════════════════
+    async function calcShipping() {
+        const address  = document.getElementById('address').value.trim();
+        const district = document.getElementById('district').value.trim();
+        const city     = document.getElementById('city').value;
+
+        if (!district || !city) { setShippingBox(''); return; }
+
+        const cacheKey = `${address}|${district}|${city}`;
+        if (cacheKey === lastGeoQuery) return; // không re-call nếu input không đổi
+        lastGeoQuery = cacheKey;
+
+        // Hủy request đang chạy nếu user tiếp tục gõ
+        if (abortCtrl) abortCtrl.abort();
+        abortCtrl = new AbortController();
+        const { signal } = abortCtrl;
+
+        setShippingBox('loading');
+        updateSummaryFee(null);
+
+        try {
+            // Bước 1: Nominatim → tọa độ khách hàng
+            const geo = await geocodeAddress(address, district, city, signal);
+
+            // Bước 2: OSRM → khoảng cách + thời gian đường bộ thực tế
+            const route = await getOsrmDistance(geo.lat, geo.lng, signal);
+
+            // Bước 3: tra bảng → phí
+            const { fee } = getShipFee(route.km);
+            currentShippingFee = fee;
+
+            setShippingBox('success', {
+                km: route.km, min: route.min,
+                fee, found: geo.found, approximate: geo.approximate,
+            });
+            updateSummaryFee(fee, `~${route.km.toFixed(1)} km`);
+
+        } catch (err) {
+            if (err.name === 'AbortError') return; // bị cancel do user gõ tiếp → im lặng
+            currentShippingFee = 15000;
+            setShippingBox('error', { msg: err.message });
+            updateSummaryFee(15000);
         }
 
-        // ── Payment option toggle ─────────────────────────
-        document.querySelectorAll('.payment-option').forEach(opt => {
-            opt.addEventListener('click', () => {
-                document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
-                opt.classList.add('selected');
-                opt.querySelector('input[type="radio"]').checked = true;
+        renderTotals();
+    }
+
+    function scheduleCalc() {
+        clearTimeout(geocodeTimer);
+        lastGeoQuery = '';                          // reset cache
+        geocodeTimer = setTimeout(calcShipping, 1200); // debounce 1.2s
+    }
+
+    ['address', 'district'].forEach(id =>
+        document.getElementById(id).addEventListener('input', scheduleCalc)
+    );
+    document.getElementById('city').addEventListener('change', () => {
+        lastGeoQuery = '';
+        calcShipping(); // thành phố đổi → tính ngay, không cần debounce
+    });
+
+    // ════════════════════════════════════════════════════
+    //  CART + CHECKOUT (giữ nguyên từ file gốc)
+    // ════════════════════════════════════════════════════
+    if (typeof CartStore === 'undefined') {
+        window.CartStore = {
+            _items: JSON.parse(localStorage.getItem('cart') || '[]'),
+            getItems()   { return this._items; },
+            totalItems() { return this._items.reduce((s, i) => s + i.quantity, 0); },
+            totalPrice() { return this._items.reduce((s, i) => s + i.price * i.quantity, 0); },
+            updateQuantity(id, qty) {
+                const item = this._items.find(i => i.id === id);
+                if (!item) return;
+                if (qty <= 0) this._items = this._items.filter(i => i.id !== id);
+                else item.quantity = qty;
+                localStorage.setItem('cart', JSON.stringify(this._items));
+                window.dispatchEvent(new Event('cart:updated'));
+            },
+            removeItem(id) { this.updateQuantity(id, 0); },
+            clearCart() {
+                this._items = [];
+                localStorage.setItem('cart', '[]');
+                window.dispatchEvent(new Event('cart:updated'));
+            }
+        };
+    }
+
+    function fmt(price) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+    }
+
+    function renderTotals() {
+        const subtotal   = CartStore.totalPrice();
+        const grandTotal = subtotal + currentShippingFee;
+        document.getElementById('subtotal').textContent   = fmt(subtotal);
+        document.getElementById('grandTotal').textContent = fmt(grandTotal);
+    }
+
+    function renderCheckout() {
+        const items      = CartStore.getItems();
+        const itemsEl    = document.getElementById('checkoutItems');
+        const summaryEl  = document.getElementById('summaryItems');
+        const countEl    = document.getElementById('itemCount');
+        const confirmBtn = document.getElementById('confirmBtn');
+
+        countEl.textContent = `${CartStore.totalItems()} món`;
+
+        if (items.length === 0) {
+            itemsEl.innerHTML = `<div class="empty-cart"><div class="icon">🛒</div>
+                <p>Giỏ hàng trống</p><a href="products.html">← Quay lại mua sắm</a></div>`;
+            summaryEl.innerHTML = '';
+            document.getElementById('subtotal').textContent   = '0đ';
+            document.getElementById('grandTotal').textContent = '0đ';
+            updateSummaryFee(0);
+            confirmBtn.disabled = true;
+            return;
+        }
+
+        confirmBtn.disabled = false;
+
+        itemsEl.innerHTML = items.map(item => `
+            <div class="cart-item" data-id="${item.id}">
+                <img class="cart-item-img"
+                     src="${item.image || 'https://placehold.co/60x60?text=☕'}"
+                     alt="${item.name}" onerror="this.src='https://placehold.co/60x60?text=☕'">
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${item.name}</div>
+                    <div class="cart-item-sub">${fmt(item.price)} / ly</div>
+                </div>
+                <div class="cart-item-qty-ctrl">
+                    <button class="qty-btn" data-action="dec" data-id="${item.id}">−</button>
+                    <span class="qty-num">${item.quantity}</span>
+                    <button class="qty-btn" data-action="inc" data-id="${item.id}">+</button>
+                </div>
+                <div class="cart-item-price">${fmt(item.price * item.quantity)}</div>
+                <button class="cart-remove" data-action="remove" data-id="${item.id}" title="Xóa">✕</button>
+            </div>`).join('');
+
+        summaryEl.innerHTML = items.map(item => `
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:#666;border-bottom:1px solid #f5f0e8;">
+                <span>${item.name} × ${item.quantity}</span>
+                <span style="font-weight:600;color:var(--coffee-dark)">${fmt(item.price * item.quantity)}</span>
+            </div>`).join('');
+
+        renderTotals();
+        updateSummaryFee(currentShippingFee);
+
+        itemsEl.querySelectorAll('[data-action]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id  = btn.dataset.id;
+                const cur = CartStore.getItems().find(i => i.id === id);
+                if (btn.dataset.action === 'inc')    CartStore.updateQuantity(id, (cur?.quantity || 0) + 1);
+                if (btn.dataset.action === 'dec')    CartStore.updateQuantity(id, (cur?.quantity || 1) - 1);
+                if (btn.dataset.action === 'remove') CartStore.removeItem(id);
             });
         });
+    }
 
-        // ── Confirm button ────────────────────────────────
-        document.getElementById('confirmBtn').addEventListener('click', function (e) {
-            // Ripple effect
-            const btn = this;
-            const rect = btn.getBoundingClientRect();
-            const rip = document.createElement('span');
-            const size = Math.max(rect.width, rect.height);
-            rip.className = 'ripple';
-            rip.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - rect.left - size / 2}px;top:${e.clientY - rect.top - size / 2}px`;
-            btn.appendChild(rip);
-            setTimeout(() => rip.remove(), 600);
-
-            // Validate
-            const name = document.getElementById('fullName').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const address = document.getElementById('address').value.trim();
-            if (!name || !phone || !address) {
-                alert('Vui lòng điền đầy đủ: Họ tên, Số điện thoại và Địa chỉ.');
-                return;
-            }
-            if (CartStore.totalItems() === 0) {
-                alert('Giỏ hàng trống!');
-                return;
-            }
-
-            const userId = localStorage.getItem('userId');
-
-            // Lấy thông tin đơn hàng cho API /orders
-            const items = CartStore.getItems();
-            const subtotal = CartStore.totalPrice();
-            const total = subtotal + SHIPPING_FEE;
-            const methodPayment = document.querySelector('input[name="payment"]:checked').value;
-            const orderData = {
-                userId: parseInt(userId),
-                items: items.map(item => ({
-                    productId: item.id,
-                    quantity: item.quantity,
-                    price: item.price
-                })),
-                totalAmount: total,
-                methodPayment: methodPayment.toUpperCase(), // API expects uppercase (CASH, BANKING, MOMO, VNPAY)
-                address: address,
-                // Optionally add more fields if needed by backend
-            };
-
-            // Gọi API đặt hàng
-            fetch("https://cafemanagement-rgd5.onrender.com/orders", {
-                method: 'POST',
-                credentials: "include",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderData)
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Đặt hàng thất bại!');
-                return response.json();
-            })
-            .then(data => {
-                // Xóa cart & hiện toast
-                CartStore.clearCart();
-                const toast = document.getElementById('toastSuccess');
-                toast.classList.add('show');
-                btn.disabled = true;
-                btn.textContent = '✅ Đã đặt hàng!';
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    window.location.href = '../index.html';
-                }, 3000);
-            })
-            .catch(err => {
-                alert(err.message || 'Đặt hàng thất bại!');
-                btn.disabled = false;
-                btn.textContent = 'Xác nhận đặt hàng →';
-            });
+    document.querySelectorAll('.payment-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+            document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+            opt.querySelector('input[type="radio"]').checked = true;
         });
+    });
 
-        // ── Lắng nghe cart update ─────────────────────────
-        window.addEventListener('cart:updated', renderCheckout);
+    document.getElementById('confirmBtn').addEventListener('click', function (e) {
+        const btn  = this;
+        const rect = btn.getBoundingClientRect();
+        const rip  = document.createElement('span');
+        const size = Math.max(rect.width, rect.height);
+        rip.className = 'ripple';
+        rip.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+        btn.appendChild(rip);
+        setTimeout(() => rip.remove(), 600);
 
-        // ── Init ──────────────────────────────────────────
-        document.addEventListener('DOMContentLoaded', renderCheckout);
+        const name    = document.getElementById('fullName').value.trim();
+        const phone   = document.getElementById('phone').value.trim();
+        const address = document.getElementById('address').value.trim();
+        if (!name || !phone || !address) { alert('Vui lòng điền đầy đủ: Họ tên, Số điện thoại và Địa chỉ.'); return; }
+        if (CartStore.totalItems() === 0) { alert('Giỏ hàng trống!'); return; }
+
+        const userId        = localStorage.getItem('userId');
+        const items         = CartStore.getItems();
+        const subtotal      = CartStore.totalPrice();
+        const total         = subtotal + currentShippingFee;
+        const methodPayment = document.querySelector('input[name="payment"]:checked').value;
+
+        const orderData = {
+            userId: parseInt(userId),
+            items: items.map(i => ({ productId: i.id, quantity: i.quantity, price: i.price })),
+            totalAmount:   total,
+            shippingFee:   currentShippingFee,
+            methodPayment: methodPayment.toUpperCase(),
+            address,
+        };
+
+        btn.disabled = true;
+        btn.textContent = '⏳ Đang đặt hàng…';
+
+        fetch('https://cafemanagement-rgd5.onrender.com/orders', {
+            method: 'POST', credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData),
+        })
+        .then(r => { if (!r.ok) throw new Error('Đặt hàng thất bại!'); return r.json(); })
+        .then(() => {
+            CartStore.clearCart();
+            document.getElementById('toastSuccess').classList.add('show');
+            btn.textContent = '✅ Đã đặt hàng!';
+            setTimeout(() => {
+                document.getElementById('toastSuccess').classList.remove('show');
+                window.location.href = '../index.html';
+            }, 3000);
+        })
+        .catch(err => {
+            alert(err.message || 'Đặt hàng thất bại!');
+            btn.disabled = false;
+            btn.textContent = 'Xác nhận đặt hàng →';
+        });
+    });
+
+    window.addEventListener('cart:updated', renderCheckout);
+    document.addEventListener('DOMContentLoaded', renderCheckout);
     </script>
 </body>
-
 </html>
