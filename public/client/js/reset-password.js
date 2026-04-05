@@ -10,7 +10,7 @@ function showPopup(type, message, onConfirm) {
                 <div class="popup-icon">${isSuccess ? "OK" : "!"}</div>
                 <p class="popup-message">${message}</p>
                 <button class="popup-btn popup-btn-${type}" id="popupConfirmBtn">
-                    ${isSuccess ? "Continue" : "Close"}
+                    ${isSuccess ? "Tiếp tục" : "Đóng"}
                 </button>
             </div>
         </div>
@@ -118,7 +118,9 @@ function setStatus(message, type) {
     tokenStatusText.classList.remove("status_ready", "status_error", "status_loading");
     tokenStatusText.classList.add(type);
 }
+let currentUserId = null;
 
+//https://cafemanagement-rgd5.onrender.com
 async function validateResetToken(token) {
     const endpoint = `https://cafemanagement-rgd5.onrender.com/reset-password/validate?token=${encodeURIComponent(token)}`;
     // http://localhost:10000/reset-password/validate?token=${encodeURIComponent(token)}
@@ -128,24 +130,26 @@ async function validateResetToken(token) {
         });
 
         if (response.ok) {
-            return true;
+            const data = await response.json();
+            return data.userId;
         }
 
         const errorText = await response.text();
-        throw new Error(errorText || "Invalid or expired reset link.");
+        throw new Error(errorText || "Liên kết không hợp lệ hoặc đã hết hạn.");
     } catch (error) {
-        throw new Error(error.message || "Invalid or expired reset link.");
+        throw new Error(error.message || "Liên kết không hợp lệ hoặc đã hết hạn.");
     }
 }
 
-async function submitPasswordReset(token, newPassword) {
-    const endpoint = "http://localhost:10000/resetPassword";
+async function submitPasswordReset(userId, token, newPassword) {
+    const endpoint = "https://cafemanagement-rgd5.onrender.com/resetPassword";
     // http://localhost:10000/requestPassword
     try {
         const response = await fetch(endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
+                userId,
                 token,
                 newPassword
             })
@@ -156,38 +160,77 @@ async function submitPasswordReset(token, newPassword) {
         }
 
         const errorText = await response.text();
-        throw new Error(errorText || "Could not reset password.");
+        throw new Error(errorText || "Không thể đặt lại mật khẩu của bạn.");
     } catch (error) {
-        throw new Error(error.message || "Could not reset password.");
+        throw new Error(error.message || "Không thể đặt lại mật khẩu của bạn.");
     }
 }
 
 async function initializeResetPage() {
     const token = getTokenFromUrl();
-    tokenPreview.value = token || "Missing token";
+    tokenPreview.value = token || "Thiếu token";
 
     if (!token) {
-        setStatus("This reset link is missing a token.", "status_error");
-        document.getElementById("resetHelpText").innerHTML =
-            'Please open the link in this format: <code>/client/pages/reset-password.html?token=...</code>';
+        setStatus("Liên kết này không có token xác thực.", "status_error");
         setFormEnabled(false);
         return;
     }
 
-    setStatus("Checking whether your reset link is still valid.", "status_loading");
+    setStatus("Đang kiểm tra xem liên kết của bạn còn hạn không...", "status_loading");
     setFormEnabled(false);
 
     try {
-        await validateResetToken(token);
-        setStatus("Your reset link is valid. Enter a new password below.", "status_ready");
+        currentUserId = await validateResetToken(token);
+        setStatus("Liên kết hợp lệ. Vui lòng nhập mật khẩu mới ở dưới.", "status_ready");
         setFormEnabled(true);
     } catch (error) {
-        setStatus(error.message || "This reset link is invalid or expired.", "status_error");
+        setStatus(error.message || "Liên kết này không hợp lệ hoặc đã hết hạn.", "status_error");
         document.getElementById("resetHelpText").innerHTML =
-            'Your link may have expired. Please request a new one from <code>forgot-password.html</code>.';
+            'Liên kết có thể đã hết hạn. Vui lòng gửi yêu cầu cấp lại từ trang <a href="forgot-password.html">Quên mật khẩu</a>.';
+        document.getElementById("resetHelpText").style.display = "block";
         setFormEnabled(false);
     }
 }
+
+// Toggle password visibility
+window.togglePassword = function(fieldId, iconEl) {
+    const input = document.getElementById(fieldId);
+    if (input.type === "password") {
+        input.type = "text";
+        iconEl.innerHTML = "👁️‍🗨️"; 
+    } else {
+        input.type = "password";
+        iconEl.innerHTML = "👁️";
+    }
+}
+
+// Password strength indicator
+newPasswordInput.addEventListener("input", function() {
+    const pwd = this.value;
+    const strengthEl = document.getElementById("passwordStrength");
+    if (!pwd) {
+        strengthEl.textContent = "";
+        return;
+    }
+    
+    let strength = 0;
+    if (pwd.length >= 6) strength++;
+    if (/[A-Z]/.test(pwd)) strength++;
+    if (/[a-z]/.test(pwd)) strength++;
+    if (/[0-9]/.test(pwd)) strength++;
+    if (/[^A-Za-z0-9]/.test(pwd)) strength++;
+
+    if (strength <= 2) {
+        strengthEl.textContent = "Độ mạnh: Yếu";
+        strengthEl.style.color = "#c0392b";
+    } else if (strength === 3 || strength === 4) {
+        strengthEl.textContent = "Độ mạnh: Trung bình";
+        strengthEl.style.color = "#d35400";
+    } else if (strength >= 5) {
+        strengthEl.textContent = "Độ mạnh: Rất mạnh";
+        strengthEl.style.color = "#27ae60";
+    }
+});
 
 resetPasswordForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -197,46 +240,59 @@ resetPasswordForm?.addEventListener("submit", async (event) => {
     const confirmPassword = confirmPasswordInput.value.trim();
 
     if (!token) {
-        showPopup("error", "Reset token is missing.");
+        showPopup("error", "Không tìm thấy token. Vui lòng kiểm tra lại liên kết.");
         return;
     }
 
     if (!newPassword || !confirmPassword) {
-        showPopup("error", "Please fill in both password fields.");
+        showPopup("error", "Vui lòng nhập đầy đủ mật khẩu mới và xác nhận mật khẩu.");
         return;
     }
 
     if (newPassword.length < 6) {
-        showPopup("error", "New password must be at least 6 characters.");
+        showPopup("error", "Mật khẩu mới phải có ít nhất 6 ký tự.");
+        return;
+    }
+
+    const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/;
+    if (!strongRegex.test(newPassword)) {
+        showPopup("error", "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 số và 1 ký tự đặc biệt.");
         return;
     }
 
     if (newPassword !== confirmPassword) {
-        showPopup("error", "Password confirmation does not match.");
+        showPopup("error", "Mật khẩu xác nhận không khớp.");
         return;
     }
 
     resetPasswordButton.disabled = true;
-    resetPasswordButton.textContent = "Resetting...";
+    resetPasswordButton.textContent = "Đang đặt lại...";
 
     try {
-        await submitPasswordReset(token, newPassword);
+        await submitPasswordReset(currentUserId, token, newPassword);
         showPopup(
             "success",
-            "Your password has been reset successfully.",
+            "Mật khẩu đã được đặt lại thành công.<br>Đang chuyển hướng...",
             () => {
                 window.location.href = "login.html";
             }
         );
         resetPasswordForm.reset();
+
+        // Chuyển hướng sau 2 giây nếu user không click Continue
+        setTimeout(() => {
+            if(window.location.href.includes('reset-password')) {
+                window.location.href = "login.html";
+            }
+        }, 2000);
     } catch (error) {
         showPopup(
             "error",
-            error.message || "Could not reset your password. Please try again."
+            error.message || "Không thể đặt lại mật khẩu. Vui lòng thử lại sau."
         );
     } finally {
         resetPasswordButton.disabled = false;
-        resetPasswordButton.textContent = "Reset password";
+        resetPasswordButton.textContent = "Đặt lại mật khẩu";
     }
 });
 
