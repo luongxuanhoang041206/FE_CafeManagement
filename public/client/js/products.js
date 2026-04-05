@@ -118,10 +118,11 @@ document.querySelector("#productModal .btn-primary").addEventListener("click", f
 
     const qty = parseInt(document.getElementById("quantity").value) || 1;
     // Lưu vào localStorage
+
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     const productIndex = cart.findIndex(item => item.id === String(currentProduct.id));
     if (productIndex > -1) {
-        cart[productIndex].quantity += qty;
+        cart[productIndex].quantity = (cart[productIndex].quantity || 0) + qty;
     } else {
         cart.push({
             id: String(currentProduct.id),
@@ -132,6 +133,11 @@ document.querySelector("#productModal .btn-primary").addEventListener("click", f
         });
     }
     localStorage.setItem('cart', JSON.stringify(cart));
+    // Đồng bộ lại CartStore nếu có
+    if (window.CartStore && Array.isArray(window.CartStore._items)) {
+        window.CartStore._items = cart;
+        window.dispatchEvent(new Event('cart:updated'));
+    }
 
     flyToCart(document.getElementById("modalImage"), () => {
         modal.hide();
@@ -166,7 +172,8 @@ function createFloatingCart() {
     document.body.appendChild(cart);
 
     cart.addEventListener('click', () => {
-        if (CartStore.totalItems() > 0) location.href = 'checkout.html';
+        // Luôn chuyển sang trang checkout.html khi click icon giỏ hàng
+        window.location.href = 'pages/checkout.html';
     });
 
     window.addEventListener('cart:updated', updateFloatingCartBadge);
