@@ -7,7 +7,7 @@ function showPopup(type, message, onConfirm) {
     popup.innerHTML = `
         <div class="popup-overlay">
             <div class="popup-box popup-${type}">
-                <div class="popup-icon">${isSuccess ? "☕" : "✖"}</div>
+                <div class="popup-icon">${isSuccess ? "OK" : "!"}</div>
                 <p class="popup-message">${message}</p>
                 <button class="popup-btn popup-btn-${type}" id="popupConfirmBtn">
                     ${isSuccess ? "Continue" : "Try again"}
@@ -62,9 +62,11 @@ popupStyle.textContent = `
     .popup-box.show { transform: translateY(0) scale(1); }
 
     .popup-icon {
-        font-size: 2.8rem;
+        font-size: 2rem;
         margin-bottom: 14px;
         line-height: 1;
+        font-weight: 700;
+        color: #3b2f2f;
     }
     .popup-message {
         font-family: "Montserrat", sans-serif;
@@ -97,33 +99,41 @@ const forgotPasswordForm = document.getElementById("forgotPasswordForm");
 const forgotPasswordButton = document.getElementById("forgotPasswordBtn");
 
 async function requestResetToken(info) {
-    const endpoint = "https://cafemanagement-rgd5.onrender.com/requestResetToken";
+    const baseUrl = "https://cafemanagement-rgd5.onrender.com";
+    const endpoints = [
+        `${baseUrl}/forgot-password`,
+        `${baseUrl}/auth/forgot-password`,
+        `${baseUrl}/api/requestResetToken`,
+        `${baseUrl}/auth/api/requestResetToken`
+    ];
 
-    try {
-        const response = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ info })
-        });
+    let lastError = "Could not send the reset request.";
 
-        console.log("📡 Response Status:", response.status);  // ← DEBUG
+    for (const endpoint of endpoints) {
+        try {
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ info })
+            });
 
-        if (response.ok) {
-            const data = await response.json();
-            console.log("✅ Success:", data);
-            return;
+            if (response.ok) {
+                const contentType = response.headers.get("content-type") || "";
+                if (contentType.includes("application/json")) {
+                    await response.json();
+                } else {
+                    await response.text();
+                }
+                return;
+            }
+
+            lastError = await response.text() || `HTTP ${response.status}`;
+        } catch (error) {
+            lastError = error.message || lastError;
         }
-
-        // Nếu không ok, log error
-        const errorMessage = await response.text();
-        console.error("❌ Error Response:", response.status, errorMessage);  // ← DEBUG
-        
-        throw new Error(errorMessage || `HTTP ${response.status}`);
-    } catch (error) {
-        console.error("🔴 Request failed:", error.message);  // ← DEBUG
-        throw error;
     }
+
+    throw new Error(lastError);
 }
 
 forgotPasswordForm?.addEventListener("submit", async (event) => {
