@@ -115,16 +115,23 @@ document.querySelector("#productModal .btn-primary").addEventListener("click", f
         return;
     }
 
-    const qty = parseInt(document.getElementById("quantity").value) || 1;
 
-    for (let i = 0; i < qty; i++) {
-        CartStore.addItem({
+    const qty = parseInt(document.getElementById("quantity").value) || 1;
+    // Lưu vào localStorage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const productIndex = cart.findIndex(item => item.id === String(currentProduct.id));
+    if (productIndex > -1) {
+        cart[productIndex].quantity += qty;
+    } else {
+        cart.push({
             id: String(currentProduct.id),
             name: currentProduct.name,
             price: Number(currentProduct.price) || 0,
-            image: currentProduct.image || ''
+            image: currentProduct.imageUrl || '',
+            quantity: qty
         });
     }
+    localStorage.setItem('cart', JSON.stringify(cart));
 
     flyToCart(document.getElementById("modalImage"), () => {
         modal.hide();

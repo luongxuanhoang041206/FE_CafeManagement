@@ -1,15 +1,47 @@
+"use client"
+
 import { useEffect, useMemo, useState } from "react"
-import { DollarSign, Loader2, Package, UserCircle, Users } from "lucide-react"
+import {
+  DollarSign,
+  Loader2,
+  Package,
+  UserCircle,
+  Users,
+  TrendingUp,
+  ArrowUpRight,
+  Coffee,
+  Activity,
+} from "lucide-react"
+import { motion } from "framer-motion"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { useAuth } from "@/lib/auth/auth-context"
-import { fetchDashboardData, type AdminDashboardResponse } from "@/lib/admin-dashboard-api"
+import {
+  fetchDashboardData,
+  type AdminDashboardResponse,
+} from "@/lib/admin-dashboard-api"
 
 interface StatItem {
   title: string
   value: string
   description: string
   icon: typeof Package
+  gradient: string
+  iconBg: string
+  trend?: string
+}
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+}
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
 }
 
 export function DashboardContent() {
@@ -41,8 +73,11 @@ export function DashboardContent() {
       {
         title: "Products",
         value: data.totalProducts.toLocaleString(),
-        description: "Total products in the system",
+        description: "Total products in catalog",
         icon: Package,
+        gradient: "from-blue-500/10 via-blue-500/5 to-transparent",
+        iconBg: "bg-blue-500/15 text-blue-600",
+        trend: "+12%",
       },
     ]
 
@@ -51,14 +86,19 @@ export function DashboardContent() {
         {
           title: "Revenue",
           value: formatCurrency(data.revenue),
-          description: "Total revenue",
+          description: "Total revenue earned",
           icon: DollarSign,
+          gradient: "from-emerald-500/10 via-emerald-500/5 to-transparent",
+          iconBg: "bg-emerald-500/15 text-emerald-600",
+          trend: "+8.2%",
         },
         {
           title: "Employees",
           value: data.totalEmployee.toLocaleString(),
-          description: "Managed employees",
+          description: "Active team members",
           icon: UserCircle,
+          gradient: "from-violet-500/10 via-violet-500/5 to-transparent",
+          iconBg: "bg-violet-500/15 text-violet-600",
         },
       )
     }
@@ -67,8 +107,11 @@ export function DashboardContent() {
       items.push({
         title: "Users",
         value: data.totalUsers.toLocaleString(),
-        description: "Registered users",
+        description: "Registered accounts",
         icon: Users,
+        gradient: "from-amber-500/10 via-amber-500/5 to-transparent",
+        iconBg: "bg-amber-500/15 text-amber-600",
+        trend: "+23",
       })
     }
 
@@ -80,7 +123,10 @@ export function DashboardContent() {
   if (isLoading) {
     return (
       <div className="flex h-full w-full items-center justify-center p-10">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Loading dashboard...</p>
+        </div>
       </div>
     )
   }
@@ -93,38 +139,154 @@ export function DashboardContent() {
     )
   }
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          Overview of key system information.
-        </p>
-      </div>
+  const currentHour = new Date().getHours()
+  const greeting =
+    currentHour < 12
+      ? "Good morning"
+      : currentHour < 18
+        ? "Good afternoon"
+        : "Good evening"
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+  return (
+    <motion.div
+      className="space-y-8"
+      variants={container}
+      initial="hidden"
+      animate="show"
+    >
+      {/* Hero Welcome Section */}
+      <motion.div variants={item}>
+        <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-primary/8 via-primary/4 to-transparent p-8">
+          <div className="absolute right-0 top-0 h-32 w-32 rounded-bl-full bg-primary/5" />
+          <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-primary/3" />
+
+          <div className="relative flex items-start justify-between">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Coffee className="size-5 text-primary" />
+                <span className="text-sm font-medium text-primary">
+                  Cafe Management
+                </span>
+              </div>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                {greeting}, {user.name.split(" ")[0]}!
+              </h1>
+              <p className="max-w-md text-sm text-muted-foreground">
+                Here&apos;s an overview of your cafe&apos;s performance. Monitor
+                key metrics and stay on top of your business.
+              </p>
+            </div>
+
+            <div className="hidden items-center gap-2 rounded-full border bg-card/80 px-4 py-2 shadow-sm backdrop-blur-sm sm:flex">
+              <Activity className="size-4 text-emerald-500" />
+              <span className="text-sm font-medium text-foreground">
+                System Active
+              </span>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Stats Grid */}
+      <motion.div
+        className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4"
+        variants={container}
+      >
         {stats.map((stat) => (
-          <StatCard key={stat.title} {...stat} />
+          <motion.div key={stat.title} variants={item}>
+            <StatCard {...stat} />
+          </motion.div>
         ))}
-      </div>
-    </div>
+      </motion.div>
+
+      {/* Quick Overview Cards */}
+      <motion.div variants={item}>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <QuickInfoCard
+            title="Today's Summary"
+            description="Keep track of today's activity"
+            icon={TrendingUp}
+            gradient="from-sky-500/10 via-sky-500/5 to-transparent"
+            iconBg="bg-sky-500/15 text-sky-600"
+          />
+          <QuickInfoCard
+            title="Inventory Status"
+            description="All ingredients well-stocked"
+            icon={Package}
+            gradient="from-teal-500/10 via-teal-500/5 to-transparent"
+            iconBg="bg-teal-500/15 text-teal-600"
+          />
+          <QuickInfoCard
+            title="Team Performance"
+            description="Staff productivity overview"
+            icon={Users}
+            gradient="from-rose-500/10 via-rose-500/5 to-transparent"
+            iconBg="bg-rose-500/15 text-rose-600"
+          />
+        </div>
+      </motion.div>
+    </motion.div>
   )
 }
 
-function StatCard({ title, value, description, icon: Icon }: StatItem) {
+function StatCard({ title, value, description, icon: Icon, gradient, iconBg, trend }: StatItem) {
   return (
-    <Card className="shadow-sm">
-      <CardContent className="p-6">
+    <Card className="group relative overflow-hidden border shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
+      <CardContent className="relative p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">{title}</p>
-            <p className="text-2xl font-semibold tracking-tight text-foreground">{value}</p>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-2xl font-bold tracking-tight text-foreground">
+              {value}
+            </p>
           </div>
-          <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
-            <Icon className="size-5 text-primary" />
+          <div
+            className={`flex size-11 items-center justify-center rounded-xl ${iconBg} transition-transform duration-300 group-hover:scale-110`}
+          >
+            <Icon className="size-5" />
           </div>
         </div>
-        <p className="mt-3 text-sm text-muted-foreground">{description}</p>
+        <div className="mt-4 flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">{description}</p>
+          {trend && (
+            <div className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600">
+              <ArrowUpRight className="size-3" />
+              {trend}
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+function QuickInfoCard({
+  title,
+  description,
+  icon: Icon,
+  gradient,
+  iconBg,
+}: {
+  title: string
+  description: string
+  icon: typeof TrendingUp
+  gradient: string
+  iconBg: string
+}) {
+  return (
+    <Card className="group relative overflow-hidden border shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
+      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
+      <CardContent className="relative flex items-center gap-4 p-5">
+        <div
+          className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${iconBg} transition-transform duration-300 group-hover:scale-110`}
+        >
+          <Icon className="size-5" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-foreground">{title}</p>
+          <p className="text-xs text-muted-foreground">{description}</p>
+        </div>
       </CardContent>
     </Card>
   )

@@ -101,26 +101,38 @@ const forgotPasswordButton = document.getElementById("forgotPasswordBtn");
 async function requestResetToken(info) {
     const endpoint = "https://cafemanagement-rgd5.onrender.com/requestResetToken";
 
+    // Render free tier can take 60+ seconds to cold start
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minute timeout
+
     try {
         const response = await fetch(endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ info })
+            body: JSON.stringify({ info }),
+            signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         if (response.ok) {
             const contentType = response.headers.get("content-type") || "";
+            let data = null;
             if (contentType.includes("application/json")) {
-                await response.json();
+                data = await response.json();
             } else {
-                await response.text();
+                data = await response.text();
             }
-            return;
+            return data; // Return the response (may contain token)
         }
 
         const errorText = await response.text();
         throw new Error(errorText || `HTTP ${response.status}`);
     } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === "AbortError") {
+            throw new Error("Request timed out. The server may be starting up. Please try again in a moment.");
+        }
         throw new Error(error.message || "Could not send the reset request.");
     }
 }
@@ -138,17 +150,44 @@ forgotPasswordForm?.addEventListener("submit", async (event) => {
     forgotPasswordButton.disabled = true;
     forgotPasswordButton.textContent = "Sending...";
 
+    // Show a "warming up" hint after 5 seconds (Render free tier cold start)
+    const warmupTimer = setTimeout(() => {
+        forgotPasswordButton.textContent = "Server is waking up... please wait";
+    }, 5000);
+
     try {
-        await requestResetToken(accountInfo);
-        showPopup(
-            "success",
-            "Your reset request was sent successfully.<br>Please check your email or follow the server instructions.",
-            () => {
-                window.location.href = "reset-password.html";
+        const responseData = await requestResetToken(accountInfo);
+        clearTimeout(warmupTimer);
+
+        // Extract token from the backend response
+        let token = null;
+        if (responseData) {
+            if (typeof responseData === "object" && responseData.token) {
+                token = responseData.token;
+            } else if (typeof responseData === "string" && responseData.length > 0) {
+                token = responseData;
             }
-        );
+        }
+
+        if (token) {
+            // Backend returned the token directly – redirect to reset page
+            showPopup(
+                "success",
+                "Your reset request was sent successfully!<br>Redirecting to the reset page...",
+                () => {
+                    window.location.href = `reset-password.html?token=${encodeURIComponent(token)}`;
+                }
+            );
+        } else {
+            // No token in response – tell user to check email
+            showPopup(
+                "success",
+                "Your reset request was sent successfully!<br>Please check your email (including spam/junk folder) for the password reset link."
+            );
+        }
         forgotPasswordForm.reset();
     } catch (error) {
+        clearTimeout(warmupTimer);
         showPopup(
             "error",
             error.message || "Could not send the reset request.<br>Please try again later."
