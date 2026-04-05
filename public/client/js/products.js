@@ -172,8 +172,12 @@ function createFloatingCart() {
     document.body.appendChild(cart);
 
     cart.addEventListener('click', () => {
-        // Luôn chuyển sang trang checkout.html khi click icon giỏ hàng
-        window.location.href = 'pages/checkout.html';
+        // Chuyển sang checkout.html cùng cấp
+        window.location.href = 'checkout.html';
+        // Cập nhật số lượng trên icon giỏ hàng ngay lập tức
+        if (typeof updateFloatingCartBadge === 'function') {
+            updateFloatingCartBadge();
+        }
     });
 
     window.addEventListener('cart:updated', updateFloatingCartBadge);
