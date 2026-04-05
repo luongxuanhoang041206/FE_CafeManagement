@@ -139,7 +139,7 @@ async function validateResetToken(token) {
 }
 
 async function submitPasswordReset(token, newPassword) {
-    const endpoint = "https://cafemanagement-rgd5.onrender.com/resetPassword";
+    const endpoint = "http://localhost:10000/resetPassword";
     // http://localhost:10000/requestPassword
     try {
         const response = await fetch(endpoint, {

@@ -175,7 +175,7 @@ forgotPasswordForm?.addEventListener("submit", async (event) => {
                 "success",
                 "Your reset request was sent successfully!<br>Redirecting to the reset page...",
                 () => {
-                    window.location.href = `reset-password.html?token=${encodeURIComponent(token)}`;
+                    //  window.location.href = `reset-password.html?token=${encodeURIComponent(token)}`;
                 }
             );
         } else {
