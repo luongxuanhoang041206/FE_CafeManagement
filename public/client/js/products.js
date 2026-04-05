@@ -138,6 +138,10 @@ document.querySelector("#productModal .btn-primary").addEventListener("click", f
         window.CartStore._items = cart;
         window.dispatchEvent(new Event('cart:updated'));
     }
+    // Luôn cập nhật số lượng trên icon giỏ hàng ngay lập tức
+    if (typeof updateFloatingCartBadge === 'function') {
+        updateFloatingCartBadge();
+    }
 
     flyToCart(document.getElementById("modalImage"), () => {
         modal.hide();
