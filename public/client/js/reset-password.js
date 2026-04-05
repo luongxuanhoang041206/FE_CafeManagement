@@ -95,7 +95,6 @@ popupStyle.textContent = `
 `;
 document.head.appendChild(popupStyle);
 
-const API_BASE_URL = "https://cafemanagement-rgd5.onrender.com";
 const resetPasswordForm = document.getElementById("resetPasswordForm");
 const resetPasswordButton = document.getElementById("resetPasswordBtn");
 const tokenStatusText = document.getElementById("tokenStatusText");
@@ -121,7 +120,7 @@ function setStatus(message, type) {
 }
 
 async function validateResetToken(token) {
-    const endpoint = `${API_BASE_URL}/reset-password/validate?token=${encodeURIComponent(token)}`;
+    const endpoint = `https://cafemanagement-rgd5.onrender.com/reset-password/validate?token=${encodeURIComponent(token)}`;
 
     try {
         const response = await fetch(endpoint, {
@@ -140,7 +139,7 @@ async function validateResetToken(token) {
 }
 
 async function submitPasswordReset(token, newPassword) {
-    const endpoint = `${API_BASE_URL}/resetPassword`;
+    const endpoint = "https://cafemanagement-rgd5.onrender.com/resetPassword";
 
     try {
         const response = await fetch(endpoint, {
