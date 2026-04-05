@@ -121,68 +121,46 @@ function setStatus(message, type) {
 }
 
 async function validateResetToken(token) {
-    const endpoints = [
-        `${API_BASE_URL}/reset-password/validate?token=${encodeURIComponent(token)}`,
-        `${API_BASE_URL}/resetPassword?token=${encodeURIComponent(token)}`,
-        `${API_BASE_URL}/auth/reset-password/validate?token=${encodeURIComponent(token)}`,
-        `${API_BASE_URL}/auth/resetPassword?token=${encodeURIComponent(token)}`
-    ];
+    const endpoint = `${API_BASE_URL}/reset-password/validate?token=${encodeURIComponent(token)}`;
 
-    let lastError = "Invalid or expired reset link.";
+    try {
+        const response = await fetch(endpoint, {
+            method: "GET"
+        });
 
-    for (const endpoint of endpoints) {
-        try {
-            const response = await fetch(endpoint, {
-                method: "GET",
-                credentials: "include"
-            });
-
-            if (response.ok) {
-                return true;
-            }
-
-            lastError = await response.text() || lastError;
-        } catch (error) {
-            lastError = error.message || lastError;
+        if (response.ok) {
+            return true;
         }
-    }
 
-    throw new Error(lastError);
+        const errorText = await response.text();
+        throw new Error(errorText || "Invalid or expired reset link.");
+    } catch (error) {
+        throw new Error(error.message || "Invalid or expired reset link.");
+    }
 }
 
 async function submitPasswordReset(token, newPassword) {
-    const endpoints = [
-        `${API_BASE_URL}/reset-password`,
-        `${API_BASE_URL}/resetPassword`,
-        `${API_BASE_URL}/auth/reset-password`,
-        `${API_BASE_URL}/auth/api/resetPassword`
-    ];
+    const endpoint = `${API_BASE_URL}/resetPassword`;
 
-    let lastError = "Could not reset password.";
+    try {
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                token,
+                newPassword
+            })
+        });
 
-    for (const endpoint of endpoints) {
-        try {
-            const response = await fetch(endpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({
-                    token,
-                    newPassword
-                })
-            });
-
-            if (response.ok) {
-                return true;
-            }
-
-            lastError = await response.text() || lastError;
-        } catch (error) {
-            lastError = error.message || lastError;
+        if (response.ok) {
+            return true;
         }
-    }
 
-    throw new Error(lastError);
+        const errorText = await response.text();
+        throw new Error(errorText || "Could not reset password.");
+    } catch (error) {
+        throw new Error(error.message || "Could not reset password.");
+    }
 }
 
 async function initializeResetPage() {

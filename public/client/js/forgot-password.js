@@ -100,7 +100,7 @@ const forgotPasswordButton = document.getElementById("forgotPasswordBtn");
 
 async function requestResetToken(info) {
     const baseUrl = "https://cafemanagement-rgd5.onrender.com";
-    const endpoint = `${baseUrl}/forgot-password`;
+    const endpoint = `${baseUrl}/requestResetToken`;
 
     try {
         const response = await fetch(endpoint, {
