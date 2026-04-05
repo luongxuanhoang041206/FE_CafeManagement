@@ -144,7 +144,7 @@ forgotPasswordForm?.addEventListener("submit", async (event) => {
             "success",
             "Your reset request was sent successfully.<br>Please check your email or follow the server instructions.",
             () => {
-                window.location.href = "login.html";
+                window.location.href = "reset-password.html";
             }
         );
         forgotPasswordForm.reset();
