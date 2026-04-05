@@ -100,40 +100,30 @@ const forgotPasswordButton = document.getElementById("forgotPasswordBtn");
 
 async function requestResetToken(info) {
     const baseUrl = "https://cafemanagement-rgd5.onrender.com";
-    const endpoints = [
-        `${baseUrl}/forgot-password`,
-        `${baseUrl}/auth/forgot-password`,
-        `${baseUrl}/api/requestResetToken`,
-        `${baseUrl}/auth/api/requestResetToken`
-    ];
+    const endpoint = `${baseUrl}/forgot-password`;
 
-    let lastError = "Could not send the reset request.";
+    try {
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ info })
+        });
 
-    for (const endpoint of endpoints) {
-        try {
-            const response = await fetch(endpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ info })
-            });
-
-            if (response.ok) {
-                const contentType = response.headers.get("content-type") || "";
-                if (contentType.includes("application/json")) {
-                    await response.json();
-                } else {
-                    await response.text();
-                }
-                return;
+        if (response.ok) {
+            const contentType = response.headers.get("content-type") || "";
+            if (contentType.includes("application/json")) {
+                await response.json();
+            } else {
+                await response.text();
             }
-
-            lastError = await response.text() || `HTTP ${response.status}`;
-        } catch (error) {
-            lastError = error.message || lastError;
+            return;
         }
-    }
 
-    throw new Error(lastError);
+        const errorText = await response.text();
+        throw new Error(errorText || `HTTP ${response.status}`);
+    } catch (error) {
+        throw new Error(error.message || "Could not send the reset request.");
+    }
 }
 
 forgotPasswordForm?.addEventListener("submit", async (event) => {
