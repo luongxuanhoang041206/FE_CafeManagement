@@ -117,27 +117,41 @@ document.querySelector("#productModal .btn-primary").addEventListener("click", f
 
 
     const qty = parseInt(document.getElementById("quantity").value) || 1;
-    // Lưu vào localStorage
-
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const productIndex = cart.findIndex(item => item.id === String(currentProduct.id));
-    if (productIndex > -1) {
-        cart[productIndex].quantity = (cart[productIndex].quantity || 0) + qty;
+    
+    // Sử dụng CartStore để đồng bộ giỏ hàng
+    if (window.CartStore) {
+        let items = CartStore.getItems();
+        const idx = items.findIndex(i => String(i.id) === String(currentProduct.id));
+        if (idx > -1) {
+            items[idx].quantity += qty;
+        } else {
+            items.push({
+                id: String(currentProduct.id),
+                name: currentProduct.name,
+                price: Number(currentProduct.price) || 0,
+                image: currentProduct.imageUrl || '',
+                quantity: qty
+            });
+        }
+        CartStore._save(items);
     } else {
-        cart.push({
-            id: String(currentProduct.id),
-            name: currentProduct.name,
-            price: Number(currentProduct.price) || 0,
-            image: currentProduct.imageUrl || '',
-            quantity: qty
-        });
+        // Fallback (hiếm khi xảy ra vì component.js được nạp trước)
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const productIndex = cart.findIndex(item => item.id === String(currentProduct.id));
+        if (productIndex > -1) {
+            cart[productIndex].quantity = (cart[productIndex].quantity || 0) + qty;
+        } else {
+            cart.push({
+                id: String(currentProduct.id),
+                name: currentProduct.name,
+                price: Number(currentProduct.price) || 0,
+                image: currentProduct.imageUrl || '',
+                quantity: qty
+            });
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
     }
-    localStorage.setItem('cart', JSON.stringify(cart));
-    // Đồng bộ lại CartStore nếu có
-    if (window.CartStore && Array.isArray(window.CartStore._items)) {
-        window.CartStore._items = cart;
-        window.dispatchEvent(new Event('cart:updated'));
-    }
+
     // Luôn cập nhật số lượng trên icon giỏ hàng ngay lập tức
     if (typeof updateFloatingCartBadge === 'function') {
         updateFloatingCartBadge();

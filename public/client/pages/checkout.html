@@ -200,8 +200,8 @@
                                     placeholder="Số nhà, tên đường, phường/xã...">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Quận / Huyện *</label>
-                                <input type="text" id="district" class="form-control" placeholder="Đống Đa">
+                                <label class="form-label">Xã / Phường *</label>
+                                <input type="text" id="district" class="form-control" placeholder="Phường Láng Thượng">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Tỉnh / Thành phố *</label>
@@ -222,7 +222,7 @@
                                     <span class="ship-icon">🚚</span>
                                     <div class="ship-text">
                                         <strong>Phí giao hàng theo khoảng cách</strong>
-                                        <span>Nhập đầy đủ địa chỉ + quận + thành phố để tính tự động</span>
+                                        <span>Nhập đầy đủ địa chỉ + xã/phường + thành phố để tính tự động</span>
                                     </div>
                                 </div>
 
@@ -388,13 +388,11 @@
         if (!raw) return '';
         raw = raw.trim();
         // Đã có prefix rồi → giữ nguyên
-        if (/^(quận|huyện|thị xã|thành phố|tp\.?)\s/i.test(raw)) return raw;
-        // Số thuần → Quận số (VD: "1" → "Quận 1")
-        if (/^\d+$/.test(raw)) return 'Quận ' + raw;
-        const lower = raw.toLowerCase();
-        if (THI_XA_LIST.some(t => t.toLowerCase() === lower))  return 'Thị xã ' + raw;
-        if (HUYEN_LIST.some(h  => h.toLowerCase()  === lower)) return 'Huyện '  + raw;
-        return 'Quận ' + raw;
+        if (/^(phường|xã|thị trấn|quận|huyện|thị xã|thành phố|tp\.?)\s/i.test(raw)) return raw;
+        // Số thuần → Phường số (VD: "1" → "Phường 1")
+        if (/^\d+$/.test(raw)) return 'Phường ' + raw;
+        // Mặc định thêm chữ Phường
+        return 'Phường ' + raw;
     }
 
     const CITY_VI = {
@@ -443,14 +441,14 @@
 
         // Query 3: fallback tiếng Anh (Nominatim parse tốt hơn với một số địa danh)
         const distEn = distNorm
-            .replace(/^Quận\s/,   'District ')
-            .replace(/^Huyện\s/,  'District ')
-            .replace(/^Thị xã\s/, 'Town ');
+            .replace(/^Phường\s/i, 'Ward ')
+            .replace(/^Xã\s/i,     'Commune ')
+            .replace(/^Thị trấn\s/i, 'Town ');
         const q3 = [distEn, cityEn, 'Vietnam'].filter(Boolean).join(', ');
         const r3 = await nominatimSearch(q3, signal);
         if (r3.length) return { lat: +r3[0].lat, lng: +r3[0].lon, found: r3[0].display_name, approximate: true };
 
-        throw new Error('Không tìm thấy địa chỉ. Kiểm tra lại Quận/Huyện và Thành phố.');
+        throw new Error('Không tìm thấy địa chỉ. Kiểm tra lại Xã/Phường và Thành phố.');
     }
 
     // ════════════════════════════════════════════════════
@@ -498,7 +496,7 @@
         } else if (state === 'success') {
             highlightTier(opts.km);
             const approxNote = opts.approximate
-                ? ' <span style="color:#f0a500;font-size:11px;">(ước tính theo quận)</span>' : '';
+                ? ' <span style="color:#f0a500;font-size:11px;">(ước tính theo xã/phường)</span>' : '';
             html = `<span class="ship-icon">🚚</span>
                     <div class="ship-text">
                         <strong>~${opts.km.toFixed(1)} km &bull; ${opts.min} phút${approxNote}</strong>
@@ -517,7 +515,7 @@
             html = `<span class="ship-icon">🚚</span>
                     <div class="ship-text">
                         <strong>Phí giao hàng theo khoảng cách</strong>
-                        <span>Nhập Quận/Huyện + Thành phố để tính tự động</span>
+                        <span>Nhập Xã/Phường + Thành phố để tính tự động</span>
                     </div>`;
         }
         box.innerHTML = html;
@@ -603,7 +601,7 @@
     // ════════════════════════════════════════════════════
     if (typeof CartStore === 'undefined') {
         window.CartStore = {
-            _items: JSON.parse(localStorage.getItem('cart') || '[]'),
+            _items: JSON.parse(localStorage.getItem('coffee-shop-cart') || '[]'),
             getItems()   { return this._items; },
             totalItems() { return this._items.reduce((s, i) => s + i.quantity, 0); },
             totalPrice() { return this._items.reduce((s, i) => s + i.price * i.quantity, 0); },
@@ -612,13 +610,13 @@
                 if (!item) return;
                 if (qty <= 0) this._items = this._items.filter(i => i.id !== id);
                 else item.quantity = qty;
-                localStorage.setItem('cart', JSON.stringify(this._items));
+                localStorage.setItem('coffee-shop-cart', JSON.stringify(this._items));
                 window.dispatchEvent(new Event('cart:updated'));
             },
             removeItem(id) { this.updateQuantity(id, 0); },
             clearCart() {
                 this._items = [];
-                localStorage.setItem('cart', '[]');
+                localStorage.setItem('coffee-shop-cart', '[]');
                 window.dispatchEvent(new Event('cart:updated'));
             }
         };
