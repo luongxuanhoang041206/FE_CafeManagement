@@ -99,7 +99,7 @@ const forgotPasswordForm = document.getElementById("forgotPasswordForm");
 const forgotPasswordButton = document.getElementById("forgotPasswordBtn");
 
 async function requestResetToken(info) {
-    const endpoint = "https://cafemanagement-rgd5.onrender.com/requestResetToken";
+    const endpoint = "http://localhost:10000/requestResetToken";
     // http://localhost:10000/requestResetToken
     // Render free tier can take 60+ seconds to cold start
     const controller = new AbortController();

@@ -120,8 +120,8 @@ function setStatus(message, type) {
 }
 
 async function validateResetToken(token) {
-    const endpoint = `http://localhost:10000/reset-password/validate?token=${encodeURIComponent(token)}`;
-
+    const endpoint = `https://cafemanagement-rgd5.onrender.com/reset-password/validate?token=${encodeURIComponent(token)}`;
+    // http://localhost:10000/reset-password/validate?token=${encodeURIComponent(token)}
     try {
         const response = await fetch(endpoint, {
             method: "GET"
