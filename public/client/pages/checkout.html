@@ -609,7 +609,7 @@
                 const item = this._items.find(i => i.id === id);
                 if (!item) return;
                 if (qty <= 0) this._items = this._items.filter(i => i.id !== id);
-                else item.quantity = qty;
+                else item.quantity = Math.min(50, qty);
                 localStorage.setItem('coffee-shop-cart', JSON.stringify(this._items));
                 window.dispatchEvent(new Event('cart:updated'));
             },

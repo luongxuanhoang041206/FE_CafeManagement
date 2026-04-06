@@ -26,7 +26,7 @@ const CartStore = {
     addItem(product) {
         const items = this.getItems();
         const idx = items.findIndex(i => i.id === product.id);
-        if (idx > -1) { items[idx].quantity += 1; }
+        if (idx > -1) { items[idx].quantity = Math.min(50, items[idx].quantity + 1); }
         else { items.push({ ...product, quantity: 1 }); }
         this._save(items);
     },
@@ -36,7 +36,7 @@ const CartStore = {
     updateQuantity(id, quantity) {
         this._save(
             this.getItems()
-                .map(i => i.id === id ? { ...i, quantity: Math.max(0, quantity) } : i)
+                .map(i => i.id === id ? { ...i, quantity: Math.min(50, Math.max(0, quantity)) } : i)
                 .filter(i => i.quantity > 0)
         );
     },
@@ -60,14 +60,14 @@ const NAVBAR_HTML = `
             <span class="logo-text">Hai Gau<em>Coffee</em></span>
         </a>
         <ul class="navbar-links">
-            <li><a href="${ROOT}index.html"        class="nav-link">Home</a></li>
-            <li><a href="${PAGES}products.html"   class="nav-link">Products</a></li>
-            <li><a href="${PAGES}about.html"      class="nav-link">About Us</a></li>
-            <li><a href="${PAGES}visit.html"      class="nav-link">Visit</a></li>
+            <li><a href="${ROOT}index.html"        class="nav-link">Trang chủ</a></li>
+            <li><a href="${PAGES}products.html"   class="nav-link">Sản phẩm</a></li>
+            <li><a href="${PAGES}about.html"      class="nav-link">Về chúng tôi</a></li>
+            <li><a href="${PAGES}visit.html"      class="nav-link">Ghé thăm</a></li>
         </ul>
         <div class="navbar-auth">
-            <a href="${PAGES}signin.html" class="btn-register" id="navBtnRegister" rel="noopener">Register</a>
-            <a href="${PAGES}login.html"  class="btn-login"    id="navBtnLogin"    rel="noopener">Login</a>
+            <a href="${PAGES}signin.html" class="btn-register" id="navBtnRegister" rel="noopener">Đăng ký</a>
+            <a href="${PAGES}login.html"  class="btn-login"    id="navBtnLogin"    rel="noopener">Đăng nhập</a>
 
             <!-- CART ICON — ẩn mặc định, chỉ hiện khi đã login -->
             <button class="cart-btn" id="cartBtn" aria-label="Giỏ hàng" style="display:none">
@@ -97,14 +97,14 @@ const NAVBAR_HTML = `
 
     <div class="navbar-mobile" id="navMobile">
         <ul>
-            <li><a href="${ROOT}index.html"        class="nav-link">Home</a></li>
-            <li><a href="${PAGES}products.html"   class="nav-link">Products</a></li>
-            <li><a href="${PAGES}about.html"      class="nav-link">About Us</a></li>
-            <li><a href="${PAGES}visit.html"      class="nav-link">Visit</a></li>
+            <li><a href="${ROOT}index.html"        class="nav-link">Trang chủ</a></li>
+            <li><a href="${PAGES}products.html"   class="nav-link">Sản phẩm</a></li>
+            <li><a href="${PAGES}about.html"      class="nav-link">Về chúng tôi</a></li>
+            <li><a href="${PAGES}visit.html"      class="nav-link">Ghé thăm</a></li>
         </ul>
         <div class="mobile-auth">
-            <a href="${PAGES}signin.html" class="btn-register" id="mobileBtnRegister" rel="noopener">Register</a>
-            <a href="${PAGES}login.html"  class="btn-login"    id="mobileBtnLogin"    rel="noopener">Login</a>
+            <a href="${PAGES}signin.html" class="btn-register" id="mobileBtnRegister" rel="noopener">Đăng ký</a>
+            <a href="${PAGES}login.html"  class="btn-login"    id="mobileBtnLogin"    rel="noopener">Đăng nhập</a>
         </div>
     </div>
 </nav>`;
@@ -135,7 +135,7 @@ const FOOTER_HTML = `
         <div class="footer-col">
             <h4 class="footer-heading">Khám phá</h4>
             <ul>
-                <li><a href="${ROOT}index.html">Home</a></li>
+                <li><a href="${ROOT}index.html">Trang chủ</a></li>
                 <li><a href="${PAGES}products.html">Thực đơn</a></li>
                 <li><a href="${PAGES}about.html">Về chúng tôi</a></li>
                 <li><a href="${PAGES}visit.html">Ghé thăm</a></li>
@@ -321,7 +321,7 @@ function updateAuthUI() {
         if (!document.getElementById('btnLogout')) {
             const logoutBtn = document.createElement('button');
             logoutBtn.id = 'btnLogout';
-            logoutBtn.textContent = 'Logout';
+            logoutBtn.textContent = 'Đăng xuất';
             logoutBtn.addEventListener('click', handleLogout);
             document.querySelector('.navbar-auth')?.appendChild(logoutBtn);
         }
@@ -343,7 +343,7 @@ function updateAuthUI() {
         if (!document.getElementById('mobileLogout')) {
             const mobileLogout = document.createElement('button');
             mobileLogout.id = 'mobileLogout';
-            mobileLogout.textContent = 'Logout';
+            mobileLogout.textContent = 'Đăng xuất';
             mobileLogout.addEventListener('click', handleLogout);
             document.querySelector('.mobile-auth')?.appendChild(mobileLogout);
         }

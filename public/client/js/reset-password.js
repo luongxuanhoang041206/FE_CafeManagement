@@ -98,7 +98,6 @@ document.head.appendChild(popupStyle);
 const resetPasswordForm = document.getElementById("resetPasswordForm");
 const resetPasswordButton = document.getElementById("resetPasswordBtn");
 const tokenStatusText = document.getElementById("tokenStatusText");
-const tokenPreview = document.getElementById("tokenPreview");
 const newPasswordInput = document.getElementById("newPassword");
 const confirmPasswordInput = document.getElementById("confirmPassword");
 
@@ -168,7 +167,6 @@ async function submitPasswordReset(userId, token, newPassword) {
 
 async function initializeResetPage() {
     const token = getTokenFromUrl();
-    tokenPreview.value = token || "Thiếu token";
 
     if (!token) {
         setStatus("Liên kết này không có token xác thực.", "status_error");
@@ -192,46 +190,6 @@ async function initializeResetPage() {
     }
 }
 
-// Toggle password visibility
-window.togglePassword = function(fieldId, iconEl) {
-    const input = document.getElementById(fieldId);
-    if (input.type === "password") {
-        input.type = "text";
-        iconEl.innerHTML = "👁️‍🗨️"; 
-    } else {
-        input.type = "password";
-        iconEl.innerHTML = "👁️";
-    }
-}
-
-// Password strength indicator
-newPasswordInput.addEventListener("input", function() {
-    const pwd = this.value;
-    const strengthEl = document.getElementById("passwordStrength");
-    if (!pwd) {
-        strengthEl.textContent = "";
-        return;
-    }
-    
-    let strength = 0;
-    if (pwd.length >= 6) strength++;
-    if (/[A-Z]/.test(pwd)) strength++;
-    if (/[a-z]/.test(pwd)) strength++;
-    if (/[0-9]/.test(pwd)) strength++;
-    if (/[^A-Za-z0-9]/.test(pwd)) strength++;
-
-    if (strength <= 2) {
-        strengthEl.textContent = "Độ mạnh: Yếu";
-        strengthEl.style.color = "#c0392b";
-    } else if (strength === 3 || strength === 4) {
-        strengthEl.textContent = "Độ mạnh: Trung bình";
-        strengthEl.style.color = "#d35400";
-    } else if (strength >= 5) {
-        strengthEl.textContent = "Độ mạnh: Rất mạnh";
-        strengthEl.style.color = "#27ae60";
-    }
-});
-
 resetPasswordForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
@@ -251,12 +209,6 @@ resetPasswordForm?.addEventListener("submit", async (event) => {
 
     if (newPassword.length < 6) {
         showPopup("error", "Mật khẩu mới phải có ít nhất 6 ký tự.");
-        return;
-    }
-
-    const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/;
-    if (!strongRegex.test(newPassword)) {
-        showPopup("error", "Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 số và 1 ký tự đặc biệt.");
         return;
     }
 

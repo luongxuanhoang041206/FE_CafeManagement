@@ -10,7 +10,7 @@ function showPopup(type, message, onConfirm) {
                 <div class="popup-icon">${isSuccess ? "OK" : "!"}</div>
                 <p class="popup-message">${message}</p>
                 <button class="popup-btn popup-btn-${type}" id="popupConfirmBtn">
-                    ${isSuccess ? "Continue" : "Try again"}
+                    ${isSuccess ? "Tiếp tục" : "Thử lại"}
                 </button>
             </div>
         </div>
@@ -131,9 +131,9 @@ async function requestResetToken(info) {
     } catch (error) {
         clearTimeout(timeoutId);
         if (error.name === "AbortError") {
-            throw new Error("Request timed out. The server may be starting up. Please try again in a moment.");
+            throw new Error("Yêu cầu quá hạn. Máy chủ có thể đang khởi động. Vui lòng thử lại sau giây lát.");
         }
-        throw new Error(error.message || "Could not send the reset request.");
+        throw new Error(error.message || "Không thể gửi yêu cầu đặt lại mật khẩu.");
     }
 }
 
@@ -143,16 +143,16 @@ forgotPasswordForm?.addEventListener("submit", async (event) => {
     const accountInfo = document.getElementById("accountInfo").value.trim();
 
     if (!accountInfo) {
-        showPopup("error", "Please enter your email or username.");
+        showPopup("error", "Vui lòng nhập email hoặc tên đăng nhập.");
         return;
     }
 
     forgotPasswordButton.disabled = true;
-    forgotPasswordButton.textContent = "Sending...";
+    forgotPasswordButton.textContent = "Đang gửi...";
 
     // Show a "warming up" hint after 5 seconds (Render free tier cold start)
     const warmupTimer = setTimeout(() => {
-        forgotPasswordButton.textContent = "Server is waking up... please wait";
+        forgotPasswordButton.textContent = "Máy chủ đang khởi động... vui lòng đợi";
     }, 5000);
 
     try {
@@ -173,7 +173,7 @@ forgotPasswordForm?.addEventListener("submit", async (event) => {
             // Backend returned the token directly – redirect to reset page
             showPopup(
                 "success",
-                "Your reset request was sent successfully!<br>Redirecting to the reset page...",
+                "Yêu cầu đặt lại mật khẩu đã được gửi thành công!<br>Đang chuyển hướng đến trang đặt lại...",
                 () => {
                     //  window.location.href = `reset-password.html?token=${encodeURIComponent(token)}`;
                 }
@@ -182,7 +182,7 @@ forgotPasswordForm?.addEventListener("submit", async (event) => {
             // No token in response – tell user to check email
             showPopup(
                 "success",
-                "Your reset request was sent successfully!<br>Please check your email (including spam/junk folder) for the password reset link."
+                "Yêu cầu của bạn đã được gửi thành công!<br>Vui lòng kiểm tra email (bao gồm cả hộp thư rác) để lấy liên kết đặt lại mật khẩu."
             );
         }
         forgotPasswordForm.reset();
@@ -190,10 +190,10 @@ forgotPasswordForm?.addEventListener("submit", async (event) => {
         clearTimeout(warmupTimer);
         showPopup(
             "error",
-            error.message || "Could not send the reset request.<br>Please try again later."
+            error.message || "Không thể gửi yêu cầu.<br>Vui lòng thử lại sau."
         );
     } finally {
         forgotPasswordButton.disabled = false;
-        forgotPasswordButton.textContent = "Send reset request";
+        forgotPasswordButton.textContent = "Gửi yêu cầu khôi phục";
     }
 });

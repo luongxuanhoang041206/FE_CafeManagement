@@ -123,14 +123,14 @@ document.querySelector("#productModal .btn-primary").addEventListener("click", f
         let items = CartStore.getItems();
         const idx = items.findIndex(i => String(i.id) === String(currentProduct.id));
         if (idx > -1) {
-            items[idx].quantity += qty;
+            items[idx].quantity = Math.min(50, items[idx].quantity + qty);
         } else {
             items.push({
                 id: String(currentProduct.id),
                 name: currentProduct.name,
                 price: Number(currentProduct.price) || 0,
                 image: currentProduct.imageUrl || '',
-                quantity: qty
+                quantity: Math.min(50, qty)
             });
         }
         CartStore._save(items);
@@ -139,14 +139,14 @@ document.querySelector("#productModal .btn-primary").addEventListener("click", f
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         const productIndex = cart.findIndex(item => item.id === String(currentProduct.id));
         if (productIndex > -1) {
-            cart[productIndex].quantity = (cart[productIndex].quantity || 0) + qty;
+            cart[productIndex].quantity = Math.min(50, (cart[productIndex].quantity || 0) + qty);
         } else {
             cart.push({
                 id: String(currentProduct.id),
                 name: currentProduct.name,
                 price: Number(currentProduct.price) || 0,
                 image: currentProduct.imageUrl || '',
-                quantity: qty
+                quantity: Math.min(50, qty)
             });
         }
         localStorage.setItem('cart', JSON.stringify(cart));
