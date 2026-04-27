@@ -169,7 +169,9 @@
     addBotMessage(templates.loading)
 
     try {
-      const response = await fetch(API_URL)
+      const response = await fetch('https://cafemanagement-rgd5.onrender.com/products',{
+        credentials: 'include'
+      })
       const data = await response.json()
       state.products = (data.content || data || []).map(enrichProduct)
       state.loaded = true
@@ -205,21 +207,50 @@
     }
   }
 
-  function handleSubmit() {
-    const input = document.getElementById('clientChatbotInput')
-    const message = input.value.trim()
+  async function handleSubmit() {
+    const inputEl = document.getElementById('clientChatbotInput')
+    const sendBtn = document.getElementById('clientChatbotSend')
+    const message = (inputEl && inputEl.value || '').trim()
     if (!message) return
 
     addUserMessage(message)
-    input.value = ''
+    inputEl.value = ''
 
-    if (!state.loaded) {
-      addBotMessage(templates.loadError)
-      return
+    // disable send button and show loading state
+    const origText = sendBtn ? sendBtn.textContent : ''
+    if (sendBtn) {
+      sendBtn.disabled = true
+      sendBtn.textContent = 'Đang trả lời...'
     }
 
-    const result = recommendProducts(message, state.products)
-    renderRecommendation(result)
+    try {
+      // call backend chat API
+      const res = await fetch('https://cafemanagement-rgd5.onrender.com/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      })
+
+      if (!res.ok) throw new Error('Network response not ok')
+
+      const data = await res.json()
+      const botText = data && data.response ? String(data.response) : templates.empty
+      addBotMessage(botText)
+    } catch (err) {
+      console.error('chat API failed', err)
+      // fallback: if we have local products, use the recommendation logic
+      if (state.loaded && state.products && state.products.length) {
+        const result = recommendProducts(message, state.products)
+        renderRecommendation(result)
+      } else {
+        addBotMessage('He thong tam thoi ban, vui long thu lai')
+      }
+    } finally {
+      if (sendBtn) {
+        sendBtn.disabled = false
+        sendBtn.textContent = origText || 'Gửi'
+      }
+    }
   }
 
   function recommendProducts(message, products) {
