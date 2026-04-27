@@ -18,7 +18,7 @@
             orderCode: `ORDER_${orderId}`
         });
 
-        const response = await fetch(`http://localhost:10000/api/qr-code/generate?${params.toString()}`, {
+        const response = await fetch(`https://cafemanagement-rgd5.onrender.com/api/qr-code/generate?${params.toString()}`, {
             method: 'GET',
             credentials: 'include'
         });
