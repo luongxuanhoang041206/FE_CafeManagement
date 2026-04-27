@@ -851,7 +851,7 @@
         btn.disabled = true;
         btn.textContent = '⏳ Đang đặt hàng…';
 
-        fetch('https://cafemanagement-rgd5.onrender.com/orders', {
+        fetch('https://cafemanagement-rgd5.onrender.com/api/orders', {
             method: 'POST', credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderData),
