@@ -114,7 +114,7 @@ signinForm.addEventListener('submit', (e) => {
             username,
             email,
             password: pwd,
-            name   // ✅ đúng format BE
+            name   //  đúng format BE
         })
     })
         .then(async response => {

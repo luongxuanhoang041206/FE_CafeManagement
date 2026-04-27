@@ -7,8 +7,6 @@ import {
   Package,
   UserCircle,
   Users,
-  TrendingUp,
-  ArrowUpRight,
   Coffee,
   Activity,
 } from "lucide-react"
@@ -28,7 +26,6 @@ interface StatItem {
   icon: typeof Package
   gradient: string
   iconBg: string
-  trend?: string
 }
 
 const container = {
@@ -39,7 +36,7 @@ const container = {
   },
 }
 
-const item = {
+const item: any = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
 }
@@ -77,7 +74,6 @@ export function DashboardContent() {
         icon: Package,
         gradient: "from-blue-500/10 via-blue-500/5 to-transparent",
         iconBg: "bg-blue-500/15 text-blue-600",
-        trend: "+12%",
       },
     ]
 
@@ -90,7 +86,6 @@ export function DashboardContent() {
           icon: DollarSign,
           gradient: "from-emerald-500/10 via-emerald-500/5 to-transparent",
           iconBg: "bg-emerald-500/15 text-emerald-600",
-          trend: "+8.2%",
         },
         {
           title: "Employees",
@@ -111,7 +106,6 @@ export function DashboardContent() {
         icon: Users,
         gradient: "from-amber-500/10 via-amber-500/5 to-transparent",
         iconBg: "bg-amber-500/15 text-amber-600",
-        trend: "+23",
       })
     }
 
@@ -199,37 +193,11 @@ export function DashboardContent() {
         ))}
       </motion.div>
 
-      {/* Quick Overview Cards */}
-      <motion.div variants={item}>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          <QuickInfoCard
-            title="Today's Summary"
-            description="Keep track of today's activity"
-            icon={TrendingUp}
-            gradient="from-sky-500/10 via-sky-500/5 to-transparent"
-            iconBg="bg-sky-500/15 text-sky-600"
-          />
-          <QuickInfoCard
-            title="Inventory Status"
-            description="All ingredients well-stocked"
-            icon={Package}
-            gradient="from-teal-500/10 via-teal-500/5 to-transparent"
-            iconBg="bg-teal-500/15 text-teal-600"
-          />
-          <QuickInfoCard
-            title="Team Performance"
-            description="Staff productivity overview"
-            icon={Users}
-            gradient="from-rose-500/10 via-rose-500/5 to-transparent"
-            iconBg="bg-rose-500/15 text-rose-600"
-          />
-        </div>
-      </motion.div>
     </motion.div>
   )
 }
 
-function StatCard({ title, value, description, icon: Icon, gradient, iconBg, trend }: StatItem) {
+function StatCard({ title, value, description, icon: Icon, gradient, iconBg }: StatItem) {
   return (
     <Card className="group relative overflow-hidden border shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
       <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
@@ -248,43 +216,6 @@ function StatCard({ title, value, description, icon: Icon, gradient, iconBg, tre
           </div>
         </div>
         <div className="mt-4 flex items-center justify-between">
-          <p className="text-xs text-muted-foreground">{description}</p>
-          {trend && (
-            <div className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600">
-              <ArrowUpRight className="size-3" />
-              {trend}
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
-function QuickInfoCard({
-  title,
-  description,
-  icon: Icon,
-  gradient,
-  iconBg,
-}: {
-  title: string
-  description: string
-  icon: typeof TrendingUp
-  gradient: string
-  iconBg: string
-}) {
-  return (
-    <Card className="group relative overflow-hidden border shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
-      <CardContent className="relative flex items-center gap-4 p-5">
-        <div
-          className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${iconBg} transition-transform duration-300 group-hover:scale-110`}
-        >
-          <Icon className="size-5" />
-        </div>
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-foreground">{title}</p>
           <p className="text-xs text-muted-foreground">{description}</p>
         </div>
       </CardContent>

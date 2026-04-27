@@ -86,18 +86,34 @@ interface PageResponse<T> {
 }
 
 async function handleResponse<T>(res: Response): Promise<T> {
-  if (!res.ok) {
-    const text = await res.text()
-    throw new Error(text || `Request failed with status ${res.status}`)
-  }
   const text = await res.text()
+
+  if (!res.ok) {
+    if (!text) {
+      throw new Error(`Request failed with status ${res.status}`)
+    }
+
+    try {
+      const data = JSON.parse(text) as { message?: string; error?: string }
+      throw new Error(data.message || data.error || text)
+    } catch {
+      throw new Error(text)
+    }
+  }
+
   if (!text) return undefined as unknown as T
   return JSON.parse(text)
 }
 
 function mapDtoToOrder(dto: AdminOrderResponse): Order {
+  let created_at = dto.created_at
+  if (created_at && typeof created_at === "string" && !created_at.endsWith("Z") && !created_at.includes("+") && !created_at.match(/-\d{2}:\d{2}$/)) {
+    created_at = created_at.replace(" ", "T") + "Z"
+  }
+
   return {
     ...dto,
+    created_at,
     items: (dto.items ?? []).map((item) => ({
       id: item.id,
       productId: item.productId,

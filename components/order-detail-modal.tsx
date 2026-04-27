@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import { Loader2 } from "lucide-react"
 import { Order, OrderStatus, getOrderById } from "@/lib/admin-orders-api"
+import { generateVietQr, isVietQrPayment } from "@/lib/vietqr-api"
+import { PaymentQrCard } from "@/components/payment-qr-card"
 import { STATUS_COLORS } from "./order-table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -47,6 +49,9 @@ export function OrderDetailModal({
 }: OrderDetailModalProps) {
   const [fullOrder, setFullOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(false)
+  const [qrLoading, setQrLoading] = useState(false)
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
+  const [qrError, setQrError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!open || !order.id) {
@@ -65,6 +70,51 @@ export function OrderDetailModal({
       setFullOrder((prev) => (prev ? { ...prev, status: order.status } : null))
     }
   }, [order.status, fullOrder])
+
+  useEffect(() => {
+    const activeOrder = fullOrder || order
+    const paymentMethod = activeOrder.payment?.method || activeOrder.methodPayment
+
+    if (!open || !activeOrder.id || !isVietQrPayment(paymentMethod)) {
+      setQrDataUrl(null)
+      setQrError(null)
+      setQrLoading(false)
+      return
+    }
+
+    let cancelled = false
+
+    async function loadQrCode() {
+      setQrLoading(true)
+      setQrError(null)
+
+      try {
+        const qrPayload = await generateVietQr({
+          orderId: activeOrder.id,
+          totalAmount: activeOrder.totalAmount || 0,
+        })
+
+        if (!cancelled) {
+          setQrDataUrl(qrPayload.qrDataURL)
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setQrDataUrl(null)
+          setQrError(error instanceof Error ? error.message : "Khong tao duoc ma QR, vui long thu lai.")
+        }
+      } finally {
+        if (!cancelled) {
+          setQrLoading(false)
+        }
+      }
+    }
+
+    void loadQrCode()
+
+    return () => {
+      cancelled = true
+    }
+  }, [fullOrder, open, order])
 
   function onAction(status: OrderStatus) {
     onUpdateStatus(status)
@@ -138,6 +188,16 @@ export function OrderDetailModal({
                   <p className="text-sm text-muted-foreground">Delivery Address</p>
                   <p className="mt-1 font-medium">{activeOrder.address}</p>
                 </div>
+              ) : null}
+
+              {isVietQrPayment(activeOrder.payment?.method || activeOrder.methodPayment) ? (
+                <PaymentQrCard
+                  orderId={activeOrder.id}
+                  totalAmount={activeOrder.totalAmount || 0}
+                  qrDataUrl={qrDataUrl}
+                  loading={qrLoading}
+                  errorMessage={qrError}
+                />
               ) : null}
 
               <Separator />

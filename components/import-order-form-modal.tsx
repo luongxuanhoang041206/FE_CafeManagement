@@ -277,8 +277,7 @@ export function ImportOrderFormModal({
                     <Label>Price</Label>
                     <Input
                       type="number"
-                      min="1"
-                      step="1000"
+                      min="0"
                       value={item.price}
                       onChange={(event) =>
                         setItems((prev) =>

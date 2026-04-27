@@ -39,17 +39,25 @@ function displayProducts(list) {
 }
 
 // ── Nút "Tất cả" ──────────────────────────────────────
-document.querySelector(".filter-btn.active").addEventListener("click", () => {
-    typeSelected = "all";
-    priceSelected = "all";
-    filterProducts();
-});
+const allFilterBtn = document.querySelector(".filter-btn.active");
+if (allFilterBtn) {
+    allFilterBtn.addEventListener("click", () => {
+        typeSelected = "all";
+        priceSelected = "all";
+        filterProducts();
+    });
+}
 
 // ── Lọc loại ─────────────────────────────────────────
 document.querySelectorAll(".type-filter").forEach(btn => {
     btn.addEventListener("click", (e) => {
         e.preventDefault();
-        typeSelected = btn.dataset.type;
+        const typeValue = btn.dataset.type;
+        if (typeValue && typeValue !== "all") {
+            typeSelected = Number(typeValue);
+        } else {
+            typeSelected = "all";
+        }
         filterProducts();
     });
 });
@@ -58,27 +66,56 @@ document.querySelectorAll(".type-filter").forEach(btn => {
 document.querySelectorAll(".price-filter").forEach(btn => {
     btn.addEventListener("click", (e) => {
         e.preventDefault();
-        priceSelected = btn.dataset.price;
+        priceSelected = btn.dataset.price || "all";
         filterProducts();
     });
 });
 
-function filterProducts() {
-    const params = new URLSearchParams();
-    if (typeSelected !== "all") params.append("groupId", typeSelected);
-    if (priceSelected === "low") params.append("maxPrice", 30000);
-    if (priceSelected === "mid") { params.append("minPrice", 30000); params.append("maxPrice", 40000); }
-    if (priceSelected === "high") params.append("minPrice", 40000);
-    params.append("page", 0);
-    params.append("size", 20);
+async function filterProducts() {
+    try {
+        const params = new URLSearchParams();
+        
+        // Chuyên hoá kiểu dữ liệu số cho groupId
+        if (typeSelected !== "all" && typeSelected != null) {
+            params.append("groupId", Number(typeSelected));
+        }
 
-    fetch(`https://cafemanagement-rgd5.onrender.com/products/search?${params.toString()}`)
-        .then(res => res.json())
-        .then(data => {
-            products = data.content || [];
-            displayProducts(products);
-        })
-        .catch(err => console.error("Lỗi:", err));
+        // Xử lý logic lọc giá
+        if (priceSelected === "low") {
+            params.append("maxPrice", 30000);
+        } else if (priceSelected === "mid") {
+            params.append("minPrice", 30000);
+            params.append("maxPrice", 40000);
+        } else if (priceSelected === "high") {
+            params.append("minPrice", 40000);
+        }
+
+        // Cấu hình phân trang
+        params.append("page", 0);
+        params.append("size", 20);
+
+        const url = `https://cafemanagement-rgd5.onrender.com/products/search?${params.toString()}`;
+        
+        console.log("=== API Request: Filter Products ===");
+        console.log("URL:", url);
+
+        const res = await fetch(url);
+        console.log("Response Status:", res.status, res.statusText);
+
+        if (!res.ok) {
+            throw new Error(`Lỗi HTTP, status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log("Response Data:", data);
+
+        // Đảm bảo không bị crash khi data lỗi hoặc rỗng
+        products = data.content || data || [];
+        displayProducts(products);
+    } catch (err) {
+        console.error("Lỗi khi lọc sản phẩm:", err);
+        displayProducts([]);
+    }
 }
 
 // ── Thanh tìm kiếm ────────────────────────────────────

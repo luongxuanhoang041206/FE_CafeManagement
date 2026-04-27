@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState } from "react"
 import { useAuth } from "@/lib/auth/auth-context"
 import { createOrder, type CreateOrderItemRequest } from "@/lib/admin-orders-api"
 import { fetchProductsFromApi } from "@/lib/admin-products-api"
+import { generateVietQr, isVietQrPayment } from "@/lib/vietqr-api"
 import type { Product } from "@/lib/mock-data"
+import { PaymentQrCard } from "@/components/payment-qr-card"
 import { ProductCard } from "@/components/product-card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -62,6 +64,12 @@ export function OrderModal({ open, onOpenChange, onSuccess }: OrderModalProps) {
   const [categories, setCategories] = useState<string[]>(["All"])
   const [loadError, setLoadError] = useState<string | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [createdOrderId, setCreatedOrderId] = useState<number | null>(null)
+  const [createdOrderTotal, setCreatedOrderTotal] = useState<number>(0)
+  const [qrDialogOpen, setQrDialogOpen] = useState(false)
+  const [qrLoading, setQrLoading] = useState(false)
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
+  const [qrError, setQrError] = useState<string | null>(null)
 
   const shouldApplyAdminAvailability = isAdminRole(user?.role)
 
@@ -114,6 +122,12 @@ export function OrderModal({ open, onOpenChange, onSuccess }: OrderModalProps) {
     setSearchTerm("")
     setSelectedCategory("All")
     setSubmitError(null)
+    setCreatedOrderId(null)
+    setCreatedOrderTotal(0)
+    setQrDialogOpen(false)
+    setQrLoading(false)
+    setQrDataUrl(null)
+    setQrError(null)
 
     return () => {
       isActive = false
@@ -250,7 +264,7 @@ export function OrderModal({ open, onOpenChange, onSuccess }: OrderModalProps) {
         price: item.price,
       }))
 
-      await createOrder({
+      const createdOrder = await createOrder({
         orderSource,
         tableId: Number(tableId),
         userId: 1,
@@ -262,17 +276,45 @@ export function OrderModal({ open, onOpenChange, onSuccess }: OrderModalProps) {
       })
 
       onSuccess()
+
+      if (isVietQrPayment(methodPayment)) {
+        setCreatedOrderId(createdOrder.id)
+        setCreatedOrderTotal(createdOrder.totalAmount || totalAmount)
+        setQrDialogOpen(true)
+        setQrLoading(true)
+        setQrDataUrl(null)
+        setQrError(null)
+        onOpenChange(false)
+
+        try {
+          const qrPayload = await generateVietQr({
+            orderId: createdOrder.id,
+            totalAmount: createdOrder.totalAmount || totalAmount,
+          })
+          setQrDataUrl(qrPayload.qrDataURL)
+        } catch (error) {
+          setQrError(error instanceof Error ? error.message : "Khong tao duoc ma QR, vui long thu lai.")
+        } finally {
+          setQrLoading(false)
+        }
+
+        return
+      }
+
       onOpenChange(false)
     } catch (error) {
       console.error("Failed to create order", error)
-      setSubmitError("Order creation failed. Please try again.")
+      setSubmitError(
+        error instanceof Error ? error.message : "Order creation failed. Please try again.",
+      )
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex h-[90vh] min-h-0 max-w-6xl flex-col overflow-hidden p-0 sm:max-w-[1100px]">
         <DialogHeader className="border-b px-6 py-4">
           <DialogTitle>Create Order</DialogTitle>
@@ -405,6 +447,7 @@ export function OrderModal({ open, onOpenChange, onSuccess }: OrderModalProps) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="CASH">Cash</SelectItem>
+                      <SelectItem value="VIETQR">VietQR</SelectItem>
                       <SelectItem value="BANKING">Banking</SelectItem>
                       <SelectItem value="MOMO">Momo</SelectItem>
                       <SelectItem value="VNPAY">VNPay</SelectItem>
@@ -522,6 +565,34 @@ export function OrderModal({ open, onOpenChange, onSuccess }: OrderModalProps) {
           </div>
         </div>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+
+      <Dialog open={qrDialogOpen} onOpenChange={setQrDialogOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>QR thanh toan VietQR</DialogTitle>
+            <DialogDescription>
+              Hien thi sau khi tao don thanh cong voi phuong thuc thanh toan VietQR.
+            </DialogDescription>
+          </DialogHeader>
+
+          {createdOrderId ? (
+            <PaymentQrCard
+              orderId={createdOrderId}
+              totalAmount={createdOrderTotal}
+              qrDataUrl={qrDataUrl}
+              loading={qrLoading}
+              errorMessage={qrError}
+            />
+          ) : null}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setQrDialogOpen(false)}>
+              Dong
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

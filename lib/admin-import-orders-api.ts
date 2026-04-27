@@ -52,12 +52,17 @@ interface ImportOrderDto {
 }
 
 function mapImportOrder(dto: ImportOrderDto): ImportOrder {
+  let createdAt = dto.createdAt
+  if (createdAt && typeof createdAt === "string" && !createdAt.endsWith("Z") && !createdAt.includes("+") && !createdAt.match(/-\d{2}:\d{2}$/)) {
+    createdAt = createdAt.replace(" ", "T") + "Z"
+  }
+
   return {
     id: dto.id,
     supplierName: dto.supplierName,
     totalPrice: dto.totalPrice,
     status: dto.status,
-    createdAt: dto.createdAt,
+    createdAt: createdAt,
     items: (dto.items ?? []).map((item) => ({
       id: item.id,
       ingredientId: item.ingredientId,
