@@ -5,7 +5,8 @@
 
 // ── Detect base path ─────────────────────────────────
 const _path = location.pathname.replace(/\\/g, '/');
-const _inPages = _path.includes('/pages/');
+const _pageAliases = new Set(['/reset-password', '/forgot-password']);
+const _inPages = _path.includes('/pages/') || _pageAliases.has(_path);
 const ROOT = _inPages ? '../' : '';
 const PAGES = _inPages ? '' : 'pages/';
 
