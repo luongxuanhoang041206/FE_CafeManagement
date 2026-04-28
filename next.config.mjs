@@ -10,6 +10,14 @@ const nextConfig = {
   async rewrites() {
     return [
       {
+        source: '/reset-password',
+        destination: '/client/pages/reset-password.html',
+      },
+      {
+        source: '/forgot-password',
+        destination: '/client/pages/forgot-password.html',
+      },
+      {
         source: '/client/:path*',
         destination: '/client/:path*',
       },
